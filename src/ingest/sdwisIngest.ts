@@ -5,6 +5,7 @@ import {
   fetchViolationsFromEnvirofacts,
 } from "../services/sdwis";
 import { getContaminantDefs } from "../services/sdwis";
+import { parseEnvirofactsDate } from "../lib/envirofacts";
 
 // -----------------------------------------------------------------------------
 // Weekly SDWIS ingestion (§18 mitigation: "Scrape SDWIS data weekly into
@@ -104,7 +105,7 @@ async function ingestSystem(env: Env, pwsid: string): Promise<void> {
     const value = s.SAMPLE_MEASURE ? Number(s.SAMPLE_MEASURE) : NaN;
     if (!code || Number.isNaN(value)) continue;
     if (!contaminantDefs.has(code)) continue; // only definitions we can interpret
-    const date = s.SAMPLING_END_DATE ?? null;
+    const date = parseEnvirofactsDate(s.SAMPLING_END_DATE);
     const existing = latestByCode.get(code);
     if (!existing || (date ?? "") > (existing.date ?? "")) {
       latestByCode.set(code, { value, unit: s.UNIT_OF_MEASURE ?? "", date });

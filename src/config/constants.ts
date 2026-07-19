@@ -83,3 +83,19 @@ export const HEALTH_BASED_VIOLATION_CATEGORIES = new Set([
 /** Number of SKUs surfaced in the results carousel (§11 — "3 to 5"). */
 export const MIN_RECOMMENDATIONS = 3;
 export const MAX_RECOMMENDATIONS = 5;
+
+// -----------------------------------------------------------------------------
+// Nitrate / nitrite policy.
+//
+// Carbon-based media (NSF/ANSI 42 and 53) do NOT remove nitrate or nitrite —
+// only reverse osmosis (NSF/ANSI 58) or ion exchange does. The set-cover engine
+// already enforces this structurally (no carbon SKU holds a 58 nitrate claim),
+// but we surface an explicit consumer warning whenever these are detected.
+// -----------------------------------------------------------------------------
+export const NITRATE_CODES = new Set(["1040", "1041"]); // Nitrate (as N), Nitrite
+
+export const NITRATE_WARNING =
+  "Nitrate/nitrite cannot be removed by standard carbon-based pitcher, faucet, or " +
+  "under-sink filters (NSF/ANSI 42 or 53). Only reverse-osmosis systems certified to " +
+  "NSF/ANSI 58 (or specific ion-exchange systems) are effective. Standard carbon filters " +
+  "will NOT protect against this contaminant.";

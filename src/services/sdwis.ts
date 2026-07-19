@@ -10,7 +10,12 @@ import {
   SDWA_TABLES,
 } from "../config/constants";
 import { cacheKeys, getJson, putJson, ttl } from "../lib/cache";
-import { fetchJson, withRetry } from "../lib/http";
+import {
+  buildEfUrl,
+  fetchEfRows,
+  isViolationActive,
+  parseEnvirofactsDate,
+} from "../lib/envirofacts";
 
 // -----------------------------------------------------------------------------
 // SDWIS municipal layer (§10, §22).
@@ -22,12 +27,26 @@ import { fetchJson, withRetry } from "../lib/http";
 // the ingestion job (and as a cold-start fallback).
 // -----------------------------------------------------------------------------
 
+const MAX_ROWS = 100;
+
 function efUrl(env: Env, table: string, column: string, value: string): string {
-  // Envirofacts REST shape: /efservice/<TABLE>/<COLUMN>/<VALUE>/JSON
-  return `${env.ENVIROFACTS_BASE}/${table}/${column}/${encodeURIComponent(value)}/JSON`;
+  // Envirofacts REST shape: /efservice/<TABLE>/<COLUMN>/<VALUE>/rows/0:100/JSON
+  return buildEfUrl(
+    env.ENVIROFACTS_BASE,
+    table,
+    column,
+    encodeURIComponent(value),
+    "rows",
+    `0:${MAX_ROWS}`
+  );
 }
 
 // ---- Raw Envirofacts row shapes (subset of columns we consume) --------------
+
+interface EfGeographicArea {
+  PWSID: string;
+  STATE_SERVED?: string;
+}
 
 interface EfWaterSystem {
   PWSID: string;
@@ -48,6 +67,8 @@ interface EfViolation {
   IS_HEALTH_BASED_IND?: string;
   NON_COMPL_PER_BEGIN_DATE?: string;
   VIOLATION_STATUS?: string;
+  COMPLIANCE_STATUS_CODE?: string;
+  RTC_DATE?: string;
 }
 
 interface EfLcrSample {
@@ -60,16 +81,42 @@ interface EfLcrSample {
 
 // ---- Envirofacts fetchers (ingestion side) ----------------------------------
 
+/**
+ * Resolve a 5-digit ZIP to PWSIDs via the official SDWA_GEOGRAPHIC_AREAS
+ * registry (§22 municipal layer). Tries GEO_ID first, then ANSI_ENTITY_CODE.
+ * Used as a coarse fallback when address geocoding fails — a ZIP can span
+ * multiple systems, so callers must surface a multi-system warning.
+ */
+export async function fetchPwsidsForZip(env: Env, zip: string): Promise<string[]> {
+  const attempt = async (column: string) => {
+    const rows = await fetchEfRows<EfGeographicArea>(
+      buildEfUrl(
+        env.ENVIROFACTS_BASE,
+        SDWA_TABLES.GEOGRAPHIC_AREAS,
+        "GEO_TYPE",
+        "ZP",
+        column,
+        encodeURIComponent(zip),
+        "rows",
+        `0:${MAX_ROWS}`
+      )
+    );
+    return rows.map((r) => r.PWSID).filter(Boolean);
+  };
+
+  const primary = await attempt("GEO_ID");
+  const pwsids = primary.length > 0 ? primary : await attempt("ANSI_ENTITY_CODE");
+  return [...new Set(pwsids)];
+}
+
 export async function fetchSystemFromEnvirofacts(
   env: Env,
   pwsid: string
 ): Promise<WaterSystem | null> {
-  const rows = await withRetry(() =>
-    fetchJson<EfWaterSystem[]>(
-      efUrl(env, SDWA_TABLES.WATER_SYSTEM, "PWSID", pwsid)
-    )
+  const rows = await fetchEfRows<EfWaterSystem>(
+    efUrl(env, SDWA_TABLES.WATER_SYSTEM, "PWSID", pwsid)
   );
-  const r = rows?.[0];
+  const r = rows[0];
   if (!r) return null;
   return {
     pwsid: r.PWSID,
@@ -88,12 +135,10 @@ export async function fetchViolationsFromEnvirofacts(
   env: Env,
   pwsid: string
 ): Promise<Violation[]> {
-  const rows = await withRetry(() =>
-    fetchJson<EfViolation[]>(
-      efUrl(env, SDWA_TABLES.VIOLATIONS, "PWSID", pwsid)
-    )
+  const rows = await fetchEfRows<EfViolation>(
+    efUrl(env, SDWA_TABLES.VIOLATIONS, "PWSID", pwsid)
   );
-  return (rows ?? []).map((r) => ({
+  return rows.map((r) => ({
     pwsid: r.PWSID,
     violation_id: r.VIOLATION_ID ?? "",
     contaminant_code: r.CONTAMINANT_CODE ?? null,
@@ -102,8 +147,9 @@ export async function fetchViolationsFromEnvirofacts(
     is_health_based:
       r.IS_HEALTH_BASED_IND === "Y" ||
       HEALTH_BASED_VIOLATION_CATEGORIES.has(r.VIOLATION_CATEGORY_CODE ?? ""),
-    begin_date: r.NON_COMPL_PER_BEGIN_DATE ?? null,
-    status: r.VIOLATION_STATUS ?? null,
+    begin_date: parseEnvirofactsDate(r.NON_COMPL_PER_BEGIN_DATE),
+    // Prefer the structured compliance status; fall back to any status string.
+    status: isViolationActive(r) ? r.VIOLATION_STATUS ?? "Unaddressed" : "Resolved",
   }));
 }
 
@@ -111,10 +157,8 @@ export async function fetchLcrSamplesFromEnvirofacts(
   env: Env,
   pwsid: string
 ): Promise<EfLcrSample[]> {
-  return withRetry(() =>
-    fetchJson<EfLcrSample[]>(
-      efUrl(env, SDWA_TABLES.LCR_SAMPLES, "PWSID", pwsid)
-    )
+  return fetchEfRows<EfLcrSample>(
+    efUrl(env, SDWA_TABLES.LCR_SAMPLES, "PWSID", pwsid)
   );
 }
 

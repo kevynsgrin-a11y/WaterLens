@@ -73,8 +73,9 @@ D ⊆ ⋃_{c ∈ C_f} N_c
 
 | Method & path | Purpose |
 |---|---|
-| `POST /api/lookup` `{ address, dwelling_type? }` | Primary MVP lookup → §22 output contract |
-| `GET /api/lookup?address=…` | Same, via query string |
+| `POST /api/lookup` `{ address, zip?, dwelling_type?, nocache? }` | Primary MVP lookup → §22 output contract |
+| `GET /api/lookup?address=…&nocache=1` | Same, via query string (`nocache=1` bypasses KV) |
+| `GET /api/lookup?zip=48503` | Coarse ZIP fallback via SDWA_GEOGRAPHIC_AREAS registry |
 | `GET /api/pws/:pwsid` | Programmatic PWS entity page data (+ SEO `indexable` gate, §9) |
 | `GET /api/contaminants` / `GET /api/contaminants/:code` | Contaminant glossary entities |
 | `GET /api/filters` / `?deceptive=1` | Filter Certification Registry; flags 42/372-only deceptive SKUs (§9) |
@@ -98,9 +99,12 @@ D ⊆ ⋃_{c ∈ C_f} N_c
   "recommended_filters": [ { "brand": "Frizzlife", "model": "M800 Under-Sink RO",
                              "certified_standards": ["58"], "neutralizes": ["PB90"],
                              "full_coverage": true, "score": 1.55, "affiliate_url": "..." } ],
+  "nitrate_warning": null,          // set to RO-only guidance when nitrate/nitrite detected
+  "multi_system_warning": false,    // true when a ZIP/address maps to >1 water system
+  "multi_system_count": 1,
   "data_freshness": { "sdwis_fetched_at": "2026-07-01T00:00:00Z", "generated_at": "..." },
   "disclaimers": [ "...medical...", "...plumbing...", "...affiliate..." ],
-  "meta": { "cache_hit": false, "engine_version": "1.0.0" }
+  "meta": { "cache_hit": false, "engine_version": "1.0.0", "resolution": "TEMM" }
 }
 ```
 
@@ -115,6 +119,10 @@ D ⊆ ⋃_{c ∈ C_f} N_c
 - **`0002_reference_data.sql`** — the curated proprietary moat (§10): NSF
   standards, contaminant definitions with MCL/health goals, and SKU-level
   verified reduction **claims**.
+- **`0003_enrichment.sql`** — contaminant health-effect narratives + priority,
+  additional regulated contaminants (nitrite, barium, cadmium, mercury,
+  coliform, E. coli, PFBS), their verified filter claims, and the
+  `zip_pwsid_map` cache for the ZIP-registry fallback.
 - **`seeds/demo.sql`** — local demo data incl. Flint MI & Newark NJ (§16).
 
 Contaminant `mcl` / `health_goal` / detection `value` all share a **canonical

@@ -201,6 +201,12 @@ export interface LookupResult {
   active_violations: Violation[];
   /** SKU-verified hardware solutions (§22). */
   recommended_filters: RecommendedFilter[];
+  /** Present only when nitrate/nitrite is detected — RO-only guidance. */
+  nitrate_warning: string | null;
+  /** True when the address/ZIP resolved to more than one candidate water system. */
+  multi_system_warning: boolean;
+  /** Total candidate systems found (may exceed the one reported). */
+  multi_system_count: number;
   data_freshness: {
     sdwis_fetched_at: string | null;
     generated_at: string;
@@ -209,6 +215,8 @@ export interface LookupResult {
   meta: {
     cache_hit: boolean;
     engine_version: string;
+    /** How the PWSID was resolved: geospatial TEMM or ZIP registry fallback. */
+    resolution: "TEMM" | "ZIP_REGISTRY" | "NONE";
   };
 }
 
