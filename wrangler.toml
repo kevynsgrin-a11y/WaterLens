@@ -1,0 +1,66 @@
+# WaterQualityLens — Cloudflare-native edge backend
+#
+# Architecture (per Strategic Build Plan §15, §22):
+#   - Workers:  API routing + orchestration + set-cover recommendation engine
+#   - D1:       serverless SQLite primary store (PWS, contaminants, violations, SKUs, certs)
+#   - KV:       aggressive caching of geocoded address->PWSID resolutions & SDWIS payloads
+#   - Queues:   background alert fan-out
+#   - Cron:     weekly SDWIS ingestion + saved-address alert evaluation
+
+name = "waterqualitylens"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# ---------------------------------------------------------------------------
+# D1 — primary relational database (edge SQLite)
+# ---------------------------------------------------------------------------
+[[d1_databases]]
+binding = "DB"
+database_name = "waterlens"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+migrations_dir = "migrations"
+
+# ---------------------------------------------------------------------------
+# KV — geocode / lookup / SDWIS response cache
+# ---------------------------------------------------------------------------
+[[kv_namespaces]]
+binding = "CACHE"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
+
+# ---------------------------------------------------------------------------
+# Queues — asynchronous alert delivery
+# ---------------------------------------------------------------------------
+[[queues.producers]]
+binding = "ALERT_QUEUE"
+queue = "waterlens-alerts"
+
+[[queues.consumers]]
+queue = "waterlens-alerts"
+max_batch_size = 25
+max_batch_timeout = 30
+max_retries = 5
+dead_letter_queue = "waterlens-alerts-dlq"
+
+# ---------------------------------------------------------------------------
+# Cron Triggers
+#   - Weekly (Mon 07:00 UTC): ingest latest SDWIS violations/detections
+#   - Daily  (12:00 UTC):     evaluate saved addresses and enqueue alerts
+# ---------------------------------------------------------------------------
+[triggers]
+crons = ["0 7 * * 1", "0 12 * * *"]
+
+# ---------------------------------------------------------------------------
+# Non-secret runtime vars. Secrets (JWT_SECRET, TAPSCORE_API_KEY, RESEND_API_KEY)
+# are provided via `wrangler secret put`.
+# ---------------------------------------------------------------------------
+[vars]
+ENVIROFACTS_BASE = "https://data.epa.gov/efservice"
+CENSUS_GEOCODER_BASE = "https://geocoding.geo.census.gov/geocoder"
+# Tier-3 modeled-radius ceiling in kilometers (see §12 Tier 3 assessment).
+MODEL_RADIUS_KM = "15"
+# Cache TTLs (seconds)
+GEOCODE_TTL = "2592000"   # 30 days — addresses are geospatially stable
+LOOKUP_TTL = "86400"      # 24 hours — SDWIS profile freshness window
+SDWIS_TTL = "604800"      # 7 days — matches weekly ingestion cadence
+ENVIRONMENT = "development"
