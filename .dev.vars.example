@@ -1,0 +1,11 @@
+# Copy to .dev.vars for local `wrangler dev`, and set in production with
+# `wrangler secret put <NAME>`. Never commit real secrets.
+
+# HMAC signing secret for session JWTs and the admin-route shared secret.
+JWT_SECRET="change-me-to-a-long-random-string"
+
+# Optional: Tap Score / SimpleLab API key for Premium vault lab-result import.
+TAPSCORE_API_KEY=""
+
+# Optional: Resend API key for transactional alert email delivery.
+RESEND_API_KEY=""
