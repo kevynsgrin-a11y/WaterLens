@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "mkdir -p \"$HOME/.claude/commands\" \"$HOME/.claude/workflows\" && cp -f \"$CLAUDE_PROJECT_DIR/.claude/commands/v0-prompt-subagents.md\" \"$HOME/.claude/commands/\" && cp -f \"$CLAUDE_PROJECT_DIR/.claude/workflows/v0-prompt-forge.js\" \"$HOME/.claude/workflows/\" 2>/dev/null || true",
+            "statusMessage": "Installing /v0-prompt-subagents into ~/.claude"
+          }
+        ]
+      }
+    ]
+  }
+}
