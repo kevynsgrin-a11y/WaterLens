@@ -1,4 +1,5 @@
 import { Coordinate } from "./types";
+import { gazetteerLookup } from "./gazetteer";
 
 // US Census Bureau geocoder — public domain, no key. Returns coordinates and
 // the TIGER geographies used for proxy resolution.
@@ -9,6 +10,8 @@ export interface GeocodeResult {
   place_name: string | null;
   state_fips: string | null;
   zip: string | null;
+  /** True when the point is a locality centroid, not a rooftop-level match. */
+  approximate?: boolean;
 }
 
 interface CensusMatch {
@@ -19,6 +22,15 @@ interface CensusMatch {
 }
 
 export async function geocode(address: string): Promise<GeocodeResult | null> {
+  const live = await geocodeCensus(address);
+  if (live) return live;
+  // Census is a no-SLA government endpoint; when it is unreachable, fall back to
+  // the bundled gazetteer so demo-coverage addresses still resolve (see
+  // gazetteer.ts). Returns null outside that coverage — no silent guessing.
+  return gazetteerLookup(address);
+}
+
+async function geocodeCensus(address: string): Promise<GeocodeResult | null> {
   const params = new URLSearchParams({
     address,
     benchmark: "Public_AR_Current",

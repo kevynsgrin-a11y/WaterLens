@@ -2,30 +2,99 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ---------------------------------------------------------------------------
+   Theme surfaces. One place defines light and dark; every component consumes
+   the semantic tokens (surface-base / surface-sunken / surface-raised /
+   hairline) rather than hard-coding a hex.
+   --------------------------------------------------------------------------- */
 :root {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-    Helvetica, Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --surface-base: #ffffff;
+  --surface-sunken: #f6f7f9;
+  --surface-raised: #ffffff;
+  --hairline: #eceef2;
+  /* Colour the focus ring sits on. Inverse sections override it. */
+  --ring-offset: #ffffff;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --surface-base: #0d1720;
+  --surface-sunken: #0a1218;
+  --surface-raised: #152430;
+  --hairline: #1e3040;
+  --ring-offset: #0d1720;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --surface-base: #0d1720;
+    --surface-sunken: #0a1218;
+    --surface-raised: #152430;
+    --hairline: #1e3040;
+    --ring-offset: #0d1720;
+    color-scheme: dark;
+  }
 }
 
 @layer base {
   html {
-    scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
   }
+  /* Declared under a media query so the intent is explicit, not incidental. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
   body {
-    @apply bg-ink-50 text-ink-800 antialiased;
+    @apply bg-surface-base text-ink-800 antialiased dark:text-ink-200;
+    /* Inter character variants: single-storey a, disambiguated 1/l/I. */
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
+
   ::selection {
     @apply bg-brand-200 text-brand-950;
   }
-  h1, h2, h3, h4 {
-    @apply text-ink-900;
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply text-ink-900 dark:text-white;
     text-wrap: balance;
   }
+
+  /* Ring geometry follows the element's own radius — no forced rounding —
+     and the offset colour is contextual so it never draws a white halo on a
+     dark band. */
   :focus-visible {
-    @apply outline-none ring-2 ring-brand-400 ring-offset-2 ring-offset-white rounded;
+    outline: none;
+    box-shadow:
+      0 0 0 2px var(--ring-offset),
+      0 0 0 4px theme("colors.brand.400");
+  }
+
+  /* Numeric data should never jitter between values. */
+  .font-mono,
+  [class*="tabular"] {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* WCAG 2.2 SC 2.4.11 — the sticky header is 4rem tall, so anything scrolled
+     to by anchor or by keyboard focus needs to clear it. */
+  :where(
+    a,
+    button,
+    input,
+    select,
+    textarea,
+    summary,
+    [tabindex]:not([tabindex="-1"]),
+    [id]
+  ) {
+    scroll-margin-top: 5rem;
   }
 }
 
@@ -33,16 +102,156 @@
   .text-balance {
     text-wrap: balance;
   }
-  /* Subtle grid/dot texture for hero backdrops — evokes engineering blueprints. */
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  /* Blueprint grid — the engineering texture behind hero and inverse bands. */
   .bg-grid {
     background-image:
-      linear-gradient(to right, rgba(27, 62, 89, 0.04) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(27, 62, 89, 0.04) 1px, transparent 1px);
+      linear-gradient(to right, rgba(27, 62, 89, 0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(27, 62, 89, 0.07) 1px, transparent 1px);
     background-size: 32px 32px;
   }
+  .dark .bg-grid,
+  [data-theme="dark"] .bg-grid {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  }
+  /* On the dark verdict/CTA bands the grid is drawn in white. */
+  .bg-brand-950 .bg-grid,
+  .bg-brand-900 .bg-grid {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+  }
+
   .bg-hero {
     background:
-      radial-gradient(60% 50% at 50% 0%, rgba(43, 118, 166, 0.10), transparent 70%),
-      linear-gradient(180deg, #ffffff 0%, #f6f7f9 100%);
+      radial-gradient(120% 90% at 78% 8%, rgba(43, 118, 166, 0.16), transparent 62%),
+      radial-gradient(80% 60% at 8% 92%, rgba(52, 132, 101, 0.1), transparent 65%),
+      linear-gradient(180deg, #fbfcfd 0%, #eef3f7 55%, #f6f7f9 100%);
+  }
+  :root[data-theme="dark"] .bg-hero {
+    background:
+      radial-gradient(120% 90% at 78% 8%, rgba(43, 118, 166, 0.26), transparent 62%),
+      radial-gradient(80% 60% at 8% 92%, rgba(52, 132, 101, 0.14), transparent 65%),
+      linear-gradient(180deg, #0d1720 0%, #101f2b 55%, #0a1218 100%);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .bg-hero {
+      background:
+        radial-gradient(120% 90% at 78% 8%, rgba(43, 118, 166, 0.26), transparent 62%),
+        radial-gradient(80% 60% at 8% 92%, rgba(52, 132, 101, 0.14), transparent 65%),
+        linear-gradient(180deg, #0d1720 0%, #101f2b 55%, #0a1218 100%);
+    }
+  }
+
+  /* Inverse bands re-colour the focus ring so it stays visible on navy. */
+  .on-dark {
+    --ring-offset: #112232;
+  }
+
+  /* Scroll reveal. Elements render final-state by default; the client Reveal
+     wrapper flips data-revealed once, on first entry. */
+  .wql-reveal {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .wql-reveal[data-revealed="true"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Staggered entrance for a list of siblings, no JS. */
+  .stagger > * {
+    animation: fade-up 0.55s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  }
+  .stagger > *:nth-child(2) {
+    animation-delay: 70ms;
+  }
+  .stagger > *:nth-child(3) {
+    animation-delay: 140ms;
+  }
+  .stagger > *:nth-child(4) {
+    animation-delay: 210ms;
+  }
+  .stagger > *:nth-child(5) {
+    animation-delay: 280ms;
+  }
+
+  /* Hero plate motion. */
+  .wql-mains polyline {
+    stroke-dasharray: 3 220;
+    animation: wql-flow 9s linear infinite;
+  }
+  .wql-ping {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: wql-ping 4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion. This is the floor the rest of the motion system builds on.
+   --------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .wql-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Print. The report is meant to be taken to a landlord or a council meeting,
+   so it has to survive Ctrl-P: drop the chrome, keep the evidence.
+   --------------------------------------------------------------------------- */
+@media print {
+  header,
+  footer,
+  [data-print-hide] {
+    display: none !important;
+  }
+  :root {
+    --surface-base: #ffffff;
+    --surface-sunken: #ffffff;
+    --surface-raised: #ffffff;
+    --hairline: #d5dae1;
+    color-scheme: light;
+  }
+  body {
+    background: #fff !important;
+    color: #1a1d22 !important;
+  }
+  article,
+  section,
+  figure,
+  table {
+    break-inside: avoid;
+  }
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75em;
+    word-break: break-all;
+  }
+  .shadow-card,
+  .shadow-lift,
+  .shadow-e1 {
+    box-shadow: none !important;
   }
 }

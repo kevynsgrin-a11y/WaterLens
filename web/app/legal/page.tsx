@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
-import { Container, Section, Card, Eyebrow, Badge } from "@/components/ui";
-import { Prose, H2, Lead } from "@/components/institutional/Prose";
+import { Container, Section, SectionHeading, Card, Eyebrow, Badge } from "@/components/ui";
+import { Prose } from "@/components/institutional/Prose";
+import {
+  TableOfContents,
+  type TocItem,
+} from "@/components/institutional/TableOfContents";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import {
   DISCLAIMER_MEDICAL,
   DISCLAIMER_PLUMBING,
@@ -20,9 +25,19 @@ export function generateMetadata(): Metadata {
       title: `${title} · WaterQualityLens`,
       description,
       type: "article",
+      url: "/legal",
     },
   };
 }
+
+const TOC: TocItem[] = [
+  { id: "medical", label: "01 · Medical" },
+  { id: "plumbing", label: "02 · Plumbing limits" },
+  { id: "mapping", label: "03 · Mapping confidence" },
+  { id: "affiliate", label: "04 · Affiliate disclosure" },
+  { id: "terms", label: "Terms of use" },
+  { id: "privacy", label: "Privacy" },
+];
 
 type Disclosure = {
   id: string;
@@ -53,12 +68,14 @@ const DISCLOSURES: Disclosure[] = [
     badge: "System-level data",
     text: DISCLAIMER_PLUMBING,
     context:
-      "Utility data describes the water as it leaves the system, not as it arrives at your faucet. Contamination introduced by your home's own pipes — a legacy lead service line, for instance — is invisible to system-level records. A point-of-use lab test is the only way to see it.",
+      "Utility data describes the water as it leaves the system, not as it arrives at your faucet. Contamination introduced by your home’s own pipes — a legacy lead service line, for instance — is invisible to system-level records. A point-of-use lab test is the only way to see it.",
   },
   {
     id: "mapping",
     n: "03",
     heading: "Mapping-confidence disclaimer",
+    // The single sanctioned amber surface: the Tier-3 mapping-ambiguity
+    // disclosure. Reinforced by the left rule and the tier label, never hue alone.
     tone: "caution",
     badge: "Tier 3 · Modeled",
     text: DISCLAIMER_TIER3,
@@ -86,7 +103,7 @@ function toneAccent(tone: Disclosure["tone"]): string {
     case "caution":
       return "before:bg-caution-400";
     case "ink":
-      return "before:bg-ink-300";
+      return "before:bg-ink-400";
   }
 }
 
@@ -94,14 +111,20 @@ export default function LegalPage() {
   return (
     <>
       {/* Hero */}
-      <Section className="bg-hero bg-grid">
+      <Section className="bg-hero bg-grid" density="tight">
         <Container>
-          <div className="max-w-3xl animate-fade-up">
+          <Breadcrumbs
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Legal & disclosures" },
+            ]}
+          />
+          <div className="mt-6 max-w-3xl animate-fade-up">
             <Eyebrow>Legal &amp; disclosures</Eyebrow>
-            <h1 className="text-4xl font-semibold tracking-tight text-ink-900 sm:text-5xl">
+            <h1 className="text-display-1 text-ink-900 dark:text-white">
               What we promise, and what we cannot
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-ink-600">
+            <p className="mt-6 max-w-2xl text-lede text-ink-600 dark:text-ink-300">
               Transparency is part of the product, so our disclosures are written
               to be read — not buried. Each one below states the limit plainly and
               explains, in ordinary language, why it exists and what it means for
@@ -111,125 +134,134 @@ export default function LegalPage() {
         </Container>
       </Section>
 
-      {/* Disclosures */}
-      <Section aria-labelledby="disclosures-h" className="pt-0">
+      <Section density="default">
         <Container>
-          <h2 id="disclosures-h" className="sr-only">
-            Disclaimers and disclosures
-          </h2>
-          <div className="grid gap-6">
-            {DISCLOSURES.map((d) => (
-              <Card
-                key={d.id}
-                as="article"
-                className={`relative overflow-hidden p-7 before:absolute before:inset-y-0 before:left-0 before:w-1 sm:p-8 ${toneAccent(
-                  d.tone
-                )}`}
-              >
-                <div
-                  id={d.id}
-                  className="scroll-mt-24"
+          <div className="lg:grid lg:grid-cols-[16rem_1fr] lg:gap-12">
+            <TableOfContents items={TOC} className="mb-10 lg:mb-0" />
+
+            <div className="min-w-0 space-y-16 lg:space-y-24">
+              {/* Disclosures */}
+              <section aria-labelledby="disclosures-h">
+                <SectionHeading
+                  eyebrow="Disclosures"
+                  id="disclosures-h"
+                  title="Disclaimers and disclosures"
+                  lede="The four limits that govern everything we publish. Each is quoted verbatim, then explained in plain language."
                 />
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <span className="font-mono text-sm font-semibold text-ink-300">
-                      {d.n}
-                    </span>
-                    <h3 className="text-xl font-semibold text-ink-900">
-                      {d.heading}
-                    </h3>
-                  </div>
-                  <Badge tone={d.tone}>{d.badge}</Badge>
+
+                <div className="mt-10 grid gap-6">
+                  {DISCLOSURES.map((d) => (
+                    <div key={d.id} id={d.id} className="scroll-mt-24">
+                      <Card
+                        as="article"
+                        className={`relative overflow-hidden p-7 before:absolute before:inset-y-0 before:left-0 before:w-1 sm:p-8 ${toneAccent(
+                          d.tone
+                        )}`}
+                      >
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                          <div className="flex items-center gap-3">
+                            <span className="font-mono text-sm font-semibold text-ink-500 dark:text-ink-400">
+                              {d.n}
+                            </span>
+                            <h3 className="text-title-2 text-ink-900 dark:text-white">
+                              {d.heading}
+                            </h3>
+                          </div>
+                          <Badge tone={d.tone}>{d.badge}</Badge>
+                        </div>
+
+                        <blockquote className="mt-5 border-l-2 border-ink-200 pl-4 text-base leading-relaxed text-ink-800 dark:border-white/15 dark:text-ink-100">
+                          {d.text}
+                        </blockquote>
+
+                        <p className="mt-5 max-w-prose text-sm leading-relaxed text-ink-600 dark:text-ink-300">
+                          {d.context}
+                        </p>
+                      </Card>
+                    </div>
+                  ))}
                 </div>
+              </section>
 
-                <blockquote className="mt-5 border-l-2 border-ink-200 pl-4 text-base leading-relaxed text-ink-800">
-                  {d.text}
-                </blockquote>
+              {/* Terms summary */}
+              <section
+                id="terms"
+                aria-labelledby="terms-h"
+                className="scroll-mt-24"
+              >
+                <SectionHeading
+                  eyebrow="Terms of use"
+                  id="terms-h"
+                  title="In short"
+                  lede="A plain-language summary. It describes how the service is meant to be used and does not replace formal terms."
+                />
+                <Prose className="mt-6">
+                  <p>
+                    WaterQualityLens is an informational tool. It aggregates
+                    public municipal water data and independent product
+                    certifications to help you understand your water and your
+                    filtration options. It is provided <strong>as is</strong>, for
+                    general information, and does not constitute professional,
+                    legal, or medical advice.
+                  </p>
+                  <ul>
+                    <li>
+                      Use the service for personal, non-commercial research and
+                      decision-making about water quality and filtration.
+                    </li>
+                    <li>
+                      Verify anything consequential — especially a low-confidence
+                      match — against your water bill and, where appropriate, a
+                      laboratory test.
+                    </li>
+                    <li>
+                      Data is sourced from third parties and public records; we
+                      present it faithfully but cannot guarantee it is complete or
+                      free of the source&rsquo;s own errors.
+                    </li>
+                  </ul>
+                </Prose>
+              </section>
 
-                <p className="mt-5 max-w-[65ch] text-sm leading-relaxed text-ink-600">
-                  {d.context}
-                </p>
-              </Card>
-            ))}
-          </div>
-        </Container>
-      </Section>
-
-      {/* Terms summary */}
-      <Section id="terms" aria-labelledby="terms-h" className="bg-ink-50">
-        <Container>
-          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
-            <div>
-              <Eyebrow>Terms of use</Eyebrow>
-              <H2 id="terms-h">In short</H2>
-              <p className="mt-4 text-sm leading-relaxed text-ink-500">
-                A plain-language summary. It describes how the service is meant to
-                be used and does not replace formal terms.
-              </p>
+              {/* Privacy summary */}
+              <section
+                id="privacy"
+                aria-labelledby="privacy-h"
+                className="scroll-mt-24"
+              >
+                <SectionHeading
+                  eyebrow="Privacy"
+                  id="privacy-h"
+                  title="Anonymous by default"
+                  lede="A plain-language summary of how we treat your data."
+                />
+                <Prose className="mt-6">
+                  <p>
+                    The core lookup is designed to be used{" "}
+                    <strong>anonymously</strong>. You do not need an account to
+                    check an address, and we do not require you to create one to
+                    see your results.
+                  </p>
+                  <ul>
+                    <li>
+                      <strong>No accounts for the core tool.</strong> Looking up
+                      an address does not create a profile tied to your identity.
+                    </li>
+                    <li>
+                      <strong>Address handling.</strong> An address is used to
+                      resolve the serving water system and return your report; it
+                      is not sold.
+                    </li>
+                    <li>
+                      <strong>Affiliate links.</strong> When you follow a{" "}
+                      &ldquo;Verified Partner&rdquo; link, the destination
+                      retailer or lab operates under its own privacy practices,
+                      not ours.
+                    </li>
+                  </ul>
+                </Prose>
+              </section>
             </div>
-            <Prose>
-              <p>
-                WaterQualityLens is an informational tool. It aggregates public
-                municipal water data and independent product certifications to
-                help you understand your water and your filtration options. It is
-                provided <strong>as is</strong>, for general information, and does
-                not constitute professional, legal, or medical advice.
-              </p>
-              <ul>
-                <li>
-                  Use the service for personal, non-commercial research and
-                  decision-making about water quality and filtration.
-                </li>
-                <li>
-                  Verify anything consequential — especially a low-confidence
-                  match — against your water bill and, where appropriate, a
-                  laboratory test.
-                </li>
-                <li>
-                  Data is sourced from third parties and public records; we
-                  present it faithfully but cannot guarantee it is complete or
-                  free of the source&rsquo;s own errors.
-                </li>
-              </ul>
-            </Prose>
-          </div>
-        </Container>
-      </Section>
-
-      {/* Privacy summary */}
-      <Section id="privacy" aria-labelledby="privacy-h">
-        <Container>
-          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
-            <div>
-              <Eyebrow>Privacy</Eyebrow>
-              <H2 id="privacy-h">Anonymous by default</H2>
-              <p className="mt-4 text-sm leading-relaxed text-ink-500">
-                A plain-language summary of how we treat your data.
-              </p>
-            </div>
-            <Prose>
-              <p>
-                The core lookup is designed to be used{" "}
-                <strong>anonymously</strong>. You do not need an account to check
-                an address, and we do not require you to create one to see your
-                results.
-              </p>
-              <ul>
-                <li>
-                  <strong>No accounts for the core tool.</strong> Looking up an
-                  address does not create a profile tied to your identity.
-                </li>
-                <li>
-                  <strong>Address handling.</strong> An address is used to resolve
-                  the serving water system and return your report; it is not sold.
-                </li>
-                <li>
-                  <strong>Affiliate links.</strong> When you follow a
-                  &ldquo;Verified Partner&rdquo; link, the destination retailer or
-                  lab operates under its own privacy practices, not ours.
-                </li>
-              </ul>
-            </Prose>
           </div>
         </Container>
       </Section>
