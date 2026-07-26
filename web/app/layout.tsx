@@ -97,7 +97,10 @@ const siteJsonLd = {
 // white flash. It ALWAYS stamps data-theme — Tailwind's `dark:` variants key off
 // that attribute, so leaving it unset for OS-preference users would theme the
 // CSS variables while leaving every `dark:` utility inert.
-const THEME_BOOTSTRAP = `(function(){try{var s=localStorage.getItem("wql-theme");var t=(s==="dark"||s==="light")?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t)}catch(e){}})()`;
+// It also marks the document as scripted, which is what gates the scroll-reveal
+// start state (see .js .wql-reveal in globals.css): with no JS the sections must
+// render visible rather than waiting for an observer that will never run.
+const THEME_BOOTSTRAP = `(function(){var d=document.documentElement;d.classList.add("js");try{var s=localStorage.getItem("wql-theme");var t=(s==="dark"||s==="light")?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");d.setAttribute("data-theme",t)}catch(e){}})()`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

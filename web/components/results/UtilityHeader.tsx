@@ -15,8 +15,12 @@ function primarySourceLabel(code: string | null): string | null {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <dt className="text-xs font-medium uppercase tracking-wide text-ink-500">{label}</dt>
-      <dd className="mt-1 text-sm font-medium text-ink-800">{children}</dd>
+      <dt className="text-xs font-medium uppercase tracking-wide text-ink-500 dark:text-ink-400">
+        {label}
+      </dt>
+      <dd className="mt-1 text-sm font-medium text-ink-800 dark:text-ink-100">
+        {children}
+      </dd>
     </div>
   );
 }
@@ -35,17 +39,19 @@ export function UtilityHeader({
   const asOf = freshness.sdwis_fetched_at ?? freshness.generated_at;
 
   return (
-    <header className="animate-fade-up">
-      <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brand-600">
+    <header className="animate-fade-up" aria-labelledby="utility-heading">
+      <p className="text-eyebrow uppercase text-brand-600 dark:text-brand-300">
         Supplying water system
       </p>
       <div className="mt-2 flex flex-wrap items-baseline gap-x-4 gap-y-2">
-        <h1 className="text-3xl font-semibold tracking-tight text-ink-900 sm:text-4xl">
+        {/* The page <h1> is the verdict banner; this is the section heading
+            beneath it, kept at display weight visually. */}
+        <h2 id="utility-heading" className="text-title-1 text-ink-900 dark:text-white">
           {utility.name}
-        </h1>
+        </h2>
         <Link
           href={`/pws/${slugPwsid(utility.pwsid)}`}
-          className="inline-flex rounded-md focus-visible:ring-2 focus-visible:ring-brand-400"
+          className="inline-flex rounded-md"
           aria-label={`View full profile for water system ${utility.pwsid}`}
         >
           <Pill tone="brand">{utility.pwsid}</Pill>
