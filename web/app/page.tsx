@@ -67,6 +67,20 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
+      {/*
+        Tonal cadence — the sections below the hero deliberately alternate their
+        Section `tone` so the page never presents a flat run of identical bands:
+
+          TrustStrip      base     (credibility rule under the hero)
+          HowItWorks      sunken
+          Differentiators base
+          CoverageStats   inverse  (dark data band, wave seam either side)
+          EducationTeaser sunken
+          ClosingCta      inverse  (dark closing band, wave seam above)
+
+        Reordering or re-toning these will collapse the rhythm — adjust the tones
+        together, not one section in isolation.
+      */}
       <Hero />
       <TrustStrip />
       <HowItWorks />

@@ -1,11 +1,14 @@
-import { Container, Section, Card, Eyebrow, Badge, Button } from "@/components/ui";
+import { Container, Section, Card, Badge, Button, SectionHeading } from "@/components/ui";
+import { Reveal } from "@/components/Reveal";
 import type { ReactNode } from "react";
 
 type Standard = {
   code: string;
   title: string;
   body: ReactNode;
-  tone: "verdant" | "brand" | "ink" | "caution";
+  tone: "verdant" | "brand" | "ink";
+  /** Set for the standard that is actively mis-sold; carried by weight, not hue. */
+  emphasis?: boolean;
   tag: string;
 };
 
@@ -51,7 +54,8 @@ const STANDARDS: Standard[] = [
   {
     code: "NSF 372",
     title: "Lead-free materials",
-    tone: "caution",
+    tone: "ink",
+    emphasis: true,
     tag: "Often misread",
     body: (
       <>
@@ -65,48 +69,56 @@ const STANDARDS: Standard[] = [
 
 export function EducationTeaser() {
   return (
-    <Section id="learn">
+    <Section id="learn" tone="sunken">
       <Container>
-        <div className="max-w-2xl">
-          <Eyebrow>The distinction that drives everything</Eyebrow>
-          <h2 className="text-2xl font-semibold tracking-tight text-ink-900 sm:text-3xl">
-            Not all certifications mean what the box implies
-          </h2>
-          <p className="mt-4 text-base leading-relaxed text-ink-600">
-            The NSF/ANSI standard printed on a filter tells you what it is
-            actually proven to do. Confusing an aesthetic or materials standard
-            for a health one is the single most common way shoppers overpay for
-            protection they don&rsquo;t get.
-          </p>
-        </div>
+        <Reveal>
+          <SectionHeading
+            eyebrow="The distinction that drives everything"
+            title="Not all certifications mean what the box implies"
+            lede="The NSF/ANSI standard printed on a filter tells you what it is actually proven to do. Confusing an aesthetic or materials standard for a health one is the single most common way shoppers overpay for protection they don’t get."
+          />
+        </Reveal>
 
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {STANDARDS.map((s) => (
-            <Card key={s.code} className="flex flex-col p-6 transition-shadow hover:shadow-lift">
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-mono text-sm font-semibold text-ink-900">
-                  {s.code}
-                </span>
-                <Badge tone={s.tone}>{s.tag}</Badge>
-              </div>
-              <h3 className="mt-4 text-base font-semibold text-ink-900">
-                {s.title}
-              </h3>
-              <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-600">
-                {s.body}
-              </p>
-            </Card>
-          ))}
-        </div>
+        <Reveal delay={80}>
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {STANDARDS.map((s) => (
+              <Card key={s.code} className="flex flex-col p-6">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-mono text-sm font-semibold text-ink-900 dark:text-white">
+                    {s.code}
+                  </span>
+                  <Badge
+                    tone={s.tone}
+                    className={
+                      s.emphasis
+                        ? "border-transparent bg-brand-800 text-white dark:bg-brand-300 dark:text-brand-950"
+                        : undefined
+                    }
+                  >
+                    {s.tag}
+                  </Badge>
+                </div>
+                <h3 className="mt-4 text-title-2 text-ink-900 dark:text-white">
+                  {s.title}
+                </h3>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-600 dark:text-ink-300">
+                  {s.body}
+                </p>
+              </Card>
+            ))}
+          </div>
+        </Reveal>
 
-        <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-          <Button href="/registry" variant="primary">
-            Explore the Filter Registry
-          </Button>
-          <Button href="/contaminants" variant="secondary">
-            Contaminant glossary
-          </Button>
-        </div>
+        <Reveal delay={140}>
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+            <Button href="/registry" variant="primary">
+              Explore the Filter Registry
+            </Button>
+            <Button href="/contaminants" variant="secondary">
+              Contaminant glossary
+            </Button>
+          </div>
+        </Reveal>
       </Container>
     </Section>
   );
