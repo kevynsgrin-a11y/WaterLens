@@ -102,24 +102,75 @@ export function ServiceAreaMap({
 
         {point ? (
           <g>
-            <circle
-              cx={px(point.lon)}
-              cy={py(point.lat)}
-              r="17"
-              className="fill-none stroke-verdant-500 dark:stroke-verdant-300"
+            {/* Crosshair rules to the frame edge — this is a survey plate, not
+                a slippy map, so the projection is stated rather than implied. */}
+            <g
+              className="text-verdant-500 dark:text-verdant-300"
+              stroke="currentColor"
               strokeWidth="1"
+              strokeDasharray="3 5"
+              opacity="0.5"
+            >
+              <line x1={px(point.lon)} y1={0} x2={px(point.lon)} y2={H} />
+              <line x1={0} y1={py(point.lat)} x2={W} y2={py(point.lat)} />
+            </g>
+            <circle
+              cx={px(point.lon)}
+              cy={py(point.lat)}
+              r="18"
+              className="fill-none stroke-verdant-500 dark:stroke-verdant-300"
+              strokeWidth="1.25"
               strokeDasharray="3 4"
-              opacity="0.75"
             />
             <circle
               cx={px(point.lon)}
               cy={py(point.lat)}
-              r="5"
+              r="5.5"
               className="fill-verdant-500 stroke-white dark:fill-verdant-300 dark:stroke-brand-950"
-              strokeWidth="2"
+              strokeWidth="2.5"
             />
+            <text
+              x={px(point.lon) + 26}
+              y={py(point.lat) + 4}
+              className="fill-ink-600 font-mono dark:fill-ink-200"
+              fontSize="11"
+              letterSpacing="0.06em"
+            >
+              {point.lat.toFixed(3)}, {point.lon.toFixed(3)}
+            </text>
           </g>
         ) : null}
+
+        {/* Frame + extent readout */}
+        <rect
+          x="0.5"
+          y="0.5"
+          width={W - 1}
+          height={H - 1}
+          fill="none"
+          className="text-ink-200 dark:text-white/15"
+          stroke="currentColor"
+        />
+        <text
+          x="10"
+          y="18"
+          className="fill-ink-500 font-mono dark:fill-ink-400"
+          fontSize="10"
+          letterSpacing="0.08em"
+        >
+          TEMM SERVICE AREA
+        </text>
+        <text
+          x={W - 10}
+          y={H - 10}
+          textAnchor="end"
+          className="fill-ink-500 font-mono dark:fill-ink-400"
+          fontSize="10"
+          letterSpacing="0.08em"
+        >
+          {maxLat.toFixed(2)}N {Math.abs(minLon).toFixed(2)}W — {minLat.toFixed(2)}N{" "}
+          {Math.abs(maxLon).toFixed(2)}W
+        </text>
       </svg>
       <figcaption className="border-t border-ink-100 px-4 py-3 text-xs leading-relaxed text-ink-600 dark:border-white/10 dark:text-ink-300">
         Mapped service-area boundary for{" "}

@@ -91,12 +91,10 @@ export default async function ResultsPage({
     return (
       <Section tone="sunken">
         <Container>
-          <div className="mb-8 border-b border-hairline pb-8" data-print-hide>
+          <div className="mb-8 border-b border-hairline pb-8">
             <p className="text-eyebrow uppercase text-ink-500 dark:text-ink-400">Report for</p>
-            <p className="mt-1 truncate text-lg font-medium text-ink-800 dark:text-ink-100">
-              {displayAddress}
-            </p>
-            <div className="mt-5 max-w-xl">
+            <h1 className="mt-1 truncate text-title-1">{displayAddress}</h1>
+            <div className="mt-5 max-w-xl" data-print-hide>
               <AddressSearch
                 variant="compact"
                 initialAddress={result.query.address}

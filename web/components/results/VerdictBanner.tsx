@@ -124,7 +124,7 @@ export function VerdictBanner({
         </p>
 
         {!noSamples && detections.length > 0 ? (
-          <div className="mt-8 grid grid-cols-2 gap-6 border-t border-white/12 pt-6 sm:grid-cols-4">
+          <div className="mt-8 grid grid-cols-2 gap-6 border-t border-white/15 pt-6 sm:grid-cols-4">
             <Metric
               value={String(exceedMcl.length)}
               label="Above federal limit"

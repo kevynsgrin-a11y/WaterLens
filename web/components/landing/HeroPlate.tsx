@@ -255,7 +255,7 @@ export function HeroPlate() {
           height="604"
           rx="22"
           fill="none"
-          className="text-ink-200 dark:text-white/12"
+          className="text-ink-200 dark:text-white/20"
           stroke="currentColor"
           strokeWidth="1"
         />
@@ -263,7 +263,7 @@ export function HeroPlate() {
       </svg>
 
       {/* Real-DOM readout chip — the actual product output, above the fold. */}
-      <div className="pointer-events-none absolute -bottom-4 left-0 w-[15.5rem] rounded-xl border border-ink-200 bg-white/90 p-3 shadow-lift backdrop-blur sm:-left-4 dark:border-white/12 dark:bg-brand-950/85">
+      <div className="pointer-events-none absolute -bottom-4 left-0 w-[15.5rem] rounded-xl border border-ink-200 bg-white/90 p-3 shadow-lift backdrop-blur sm:-left-4 dark:border-white/15 dark:bg-brand-950/85">
         <p className="font-mono text-[0.625rem] uppercase tracking-[0.12em] text-ink-500 dark:text-brand-200/70">
           PWS MI0002360
         </p>
@@ -271,7 +271,7 @@ export function HeroPlate() {
           Lead (Pb90)
           <span className="font-mono tabular-nums">27 µg/L</span>
         </p>
-        <div className="relative mt-2 h-1 w-full rounded-full bg-ink-100 dark:bg-white/12">
+        <div className="relative mt-2 h-1 w-full rounded-full bg-ink-100 dark:bg-white/15">
           <div className="h-1 w-full rounded-full bg-brand-500" />
           <div
             className="absolute -inset-y-1 w-px bg-ink-400 dark:bg-white/50"

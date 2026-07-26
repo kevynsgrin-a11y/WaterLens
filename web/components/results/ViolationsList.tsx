@@ -16,7 +16,7 @@ function statusChipClass(status: string | null): string {
   if (s.includes("resolved") || s.includes("returned") || s.includes("addressed")) {
     return "bg-verdant-50 text-verdant-700 border-verdant-200 dark:bg-verdant-300/10 dark:text-verdant-200 dark:border-verdant-300/25";
   }
-  return "bg-ink-100 text-ink-700 border-ink-200 dark:bg-white/8 dark:text-ink-200 dark:border-white/15";
+  return "bg-ink-100 text-ink-700 border-ink-200 dark:bg-white/10 dark:text-ink-200 dark:border-white/15";
 }
 
 export function ViolationsList({ violations }: { violations: Violation[] }) {

@@ -11,7 +11,7 @@ export function Hero() {
     >
       <div className="bg-grid absolute inset-0" aria-hidden="true" />
 
-      <Container className="relative py-12 sm:py-20 lg:py-24">
+      <Container className="relative py-8 sm:py-16 lg:py-24">
         <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
           {/* Copy + the primary action */}
           <div className="lg:col-span-6">
@@ -28,13 +28,13 @@ export function Hero() {
                 </span>
               </h1>
 
-              <p className="mt-6 max-w-xl text-lede text-ink-600 dark:text-ink-300">
+              <p className="mt-4 max-w-xl text-base leading-relaxed text-ink-600 sm:mt-6 sm:text-lede dark:text-ink-300">
                 Enter your address. We identify the utility that actually serves
                 it, what it reports against federal limits, and the filters
-                independently certified to remove it.
+                certified to remove it.
               </p>
 
-              <div className="mt-8">
+              <div className="mt-6 sm:mt-8">
                 <AddressSearch variant="hero" align="start" />
               </div>
             </div>

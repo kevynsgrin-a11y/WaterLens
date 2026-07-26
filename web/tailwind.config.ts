@@ -87,8 +87,8 @@ const config: Config = {
       fontSize: {
         // Fluid display tier — optical tracking tightens as size grows.
         "display-1": [
-          "clamp(2.25rem, 1.5rem + 2.4vw, 3.5rem)",
-          { lineHeight: "1.07", letterSpacing: "-0.03em", fontWeight: "600" },
+          "clamp(1.9375rem, 1.25rem + 2.6vw, 3.5rem)",
+          { lineHeight: "1.09", letterSpacing: "-0.03em", fontWeight: "600" },
         ],
         "display-2": [
           "clamp(2rem, 1.35rem + 2.4vw, 3.25rem)",

@@ -165,7 +165,7 @@ const toneMap: Record<Tone, string> = {
     "bg-brand-50 text-brand-700 border-brand-200 dark:bg-brand-300/10 dark:text-brand-200 dark:border-brand-300/25",
   verdant:
     "bg-verdant-50 text-verdant-700 border-verdant-200 dark:bg-verdant-300/10 dark:text-verdant-200 dark:border-verdant-300/25",
-  ink: "bg-ink-100 text-ink-700 border-ink-200 dark:bg-white/8 dark:text-ink-200 dark:border-white/15",
+  ink: "bg-ink-100 text-ink-700 border-ink-200 dark:bg-white/10 dark:text-ink-200 dark:border-white/15",
   caution:
     "bg-caution-50 text-caution-800 border-caution-200 dark:bg-caution-300/10 dark:text-caution-200 dark:border-caution-300/25",
 };
@@ -233,7 +233,7 @@ export function IconTile({
     brand: "bg-brand-50 text-brand-600 dark:bg-brand-300/10 dark:text-brand-200",
     verdant:
       "bg-verdant-50 text-verdant-600 dark:bg-verdant-300/10 dark:text-verdant-200",
-    ink: "bg-ink-100 text-ink-600 dark:bg-white/8 dark:text-ink-200",
+    ink: "bg-ink-100 text-ink-600 dark:bg-white/10 dark:text-ink-200",
   } as const;
   return (
     <span
