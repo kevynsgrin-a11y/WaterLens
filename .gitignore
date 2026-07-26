@@ -7,3 +7,6 @@ dist/
 coverage/
 .vscode/
 .idea/
+
+# Next.js build output (web/ has its own, this catches stray root runs)
+.next/

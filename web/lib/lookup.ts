@@ -17,7 +17,9 @@ import * as ef from "./envirofacts";
 import {
   Detection,
   DwellingType,
+  HistoryPoint,
   LookupResult,
+  Polygon,
   SpatialMatch,
   Violation,
   WaterSystem,
@@ -60,6 +62,11 @@ export function demoProfile(pwsid: string): {
   };
 }
 
+interface AssembleExtras {
+  history?: HistoryPoint[];
+  serviceBoundary?: Polygon | null;
+}
+
 function assemble(
   query: LookupResult["query"],
   coordinate: LookupResult["coordinate"],
@@ -70,17 +77,25 @@ function assemble(
   dwelling: DwellingType,
   resolution: LookupResult["meta"]["resolution"],
   fetched_at: string | null,
-  multiCount: number
+  multiCount: number,
+  extras: AssembleExtras = {}
 ): LookupResult {
   const exceedances = detections
     .filter((d) => d.exceeds_health_goal)
     .sort((a, b) => (b.mcl_ratio ?? 0) - (a.mcl_ratio ?? 0));
+  // Only carry history for contaminants actually surfaced in this report.
+  const shown = new Set(exceedances.map((d) => d.code));
+  const history = (extras.history ?? [])
+    .filter((h) => shown.has(h.code))
+    .sort((a, b) => a.sample_date.localeCompare(b.sample_date));
   return {
     query,
     coordinate,
     match,
     utility,
     detected_contaminants: exceedances,
+    history,
+    service_boundary: extras.serviceBoundary ?? null,
     active_violations: violations,
     recommended_filters: matchFilters(detections, dwelling),
     nitrate_warning: nitrate(exceedances),
@@ -130,7 +145,8 @@ export async function runLookup(
       const prof = demoProfile(match.pwsid)!;
       return assemble(
         query, geo.coordinate, match, prof.utility, prof.detections,
-        prof.violations, dwelling, "TEMM", prof.fetched_at, 1
+        prof.violations, dwelling, "TEMM", prof.fetched_at, 1,
+        { history: prof.history, serviceBoundary: DEMO_BY_PWSID.get(match.pwsid)?.boundary ?? null }
       );
     }
     // 2. Outside demo coverage — live Envirofacts ZIP fallback.

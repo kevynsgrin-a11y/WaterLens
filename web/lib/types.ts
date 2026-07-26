@@ -116,6 +116,13 @@ export interface RecommendedFilter {
   score: number;
 }
 
+export interface HistoryPoint {
+  code: string;
+  value: number;
+  unit: string;
+  sample_date: string;
+}
+
 export interface LookupResult {
   query: {
     address: string;
@@ -126,6 +133,10 @@ export interface LookupResult {
   match: SpatialMatch;
   utility: WaterSystem | null;
   detected_contaminants: Detection[];
+  /** Prior samples for the detected contaminants, oldest first. */
+  history: HistoryPoint[];
+  /** The resolved system's service-area polygon, when we hold one. */
+  service_boundary: Polygon | null;
   active_violations: Violation[];
   recommended_filters: RecommendedFilter[];
   nitrate_warning: string | null;
