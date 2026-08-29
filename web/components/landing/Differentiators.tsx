@@ -1,4 +1,5 @@
-import { Container, Section, Card, Eyebrow, Badge } from "@/components/ui";
+import { Container, Section, Card, Badge, SectionHeading } from "@/components/ui";
+import { Reveal } from "@/components/Reveal";
 
 function CheckIcon() {
   return (
@@ -47,90 +48,106 @@ const ROWS: Row[] = [
 
 export function Differentiators() {
   return (
-    <Section id="why-different">
+    <Section id="why-different" tone="base">
       <Container>
-        <div className="max-w-2xl">
-          <Eyebrow>Why we&rsquo;re different</Eyebrow>
-          <h2 className="text-2xl font-semibold tracking-tight text-ink-900 sm:text-3xl">
-            An auditor&rsquo;s standard, not an advocacy pitch
-          </h2>
-          <p className="mt-4 text-base leading-relaxed text-ink-600">
-            Most water-quality tools are built to alarm or to sell. We report the
-            public record against the legal standard and point you to
-            independently verified hardware &mdash; whoever makes it. Here is how
-            that compares to the common approaches.
-          </p>
-        </div>
+        <Reveal>
+          <SectionHeading
+            eyebrow="Why we’re different"
+            title="An auditor’s standard, not an advocacy pitch"
+            lede="Most water-quality tools are built to alarm or to sell. We report the public record against the legal standard and point you to independently verified hardware — whoever makes it. Here is how that compares to the common approaches."
+          />
+        </Reveal>
 
-        {/* Comparison table (md and up) */}
-        <div className="mt-10 hidden overflow-hidden rounded-2xl border border-ink-100 bg-white shadow-card md:block">
-          <table className="w-full border-collapse text-left">
-            <caption className="sr-only">
-              WaterQualityLens compared with common water-quality tools
-            </caption>
-            <thead>
-              <tr className="border-b border-ink-100 bg-ink-50">
-                <th scope="col" className="w-1/4 px-6 py-4 text-sm font-semibold text-ink-700">
-                  Dimension
-                </th>
-                <th scope="col" className="w-2/5 px-6 py-4">
-                  <span className="inline-flex items-center gap-2 text-sm font-semibold text-brand-700">
-                    <Badge tone="verdant">WaterQualityLens</Badge>
-                  </span>
-                </th>
-                <th scope="col" className="px-6 py-4 text-sm font-semibold text-ink-500">
-                  Common approaches
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {ROWS.map((row) => (
-                <tr key={row.dimension} className="border-b border-ink-100 last:border-0 align-top">
-                  <th scope="row" className="px-6 py-5 text-sm font-medium text-ink-700">
-                    {row.dimension}
+        <Reveal delay={80}>
+          {/* Comparison table (md and up) */}
+          <div className="mt-10 hidden overflow-hidden rounded-2xl bg-surface-raised shadow-card ring-1 ring-ink-900/[0.055] md:block dark:ring-white/10">
+            <table className="w-full border-collapse text-left">
+              <caption className="sr-only">
+                WaterQualityLens compared with common water-quality tools
+              </caption>
+              <thead>
+                <tr className="border-b border-hairline bg-surface-sunken">
+                  <th
+                    scope="col"
+                    className="w-1/4 px-6 py-4 text-sm font-semibold text-ink-700 dark:text-ink-200"
+                  >
+                    Dimension
                   </th>
-                  <td className="px-6 py-5">
-                    <div className="flex gap-2.5 text-sm text-ink-800">
-                      <span className="mt-0.5 shrink-0 text-verdant-600" aria-hidden="true">
-                        <CheckIcon />
-                      </span>
-                      <span>{row.ours}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-5">
-                    <div className="flex gap-2.5 text-sm text-ink-500">
-                      <span className="mt-0.5 shrink-0 text-ink-400" aria-hidden="true">
-                        <DashIcon />
-                      </span>
-                      <span>{row.others}</span>
-                    </div>
-                  </td>
+                  <th scope="col" className="w-2/5 px-6 py-4">
+                    <Badge tone="verdant">WaterQualityLens</Badge>
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-4 text-sm font-semibold text-ink-500 dark:text-ink-400"
+                  >
+                    Common approaches
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {ROWS.map((row) => (
+                  <tr
+                    key={row.dimension}
+                    className="border-b border-hairline align-top last:border-0"
+                  >
+                    <th
+                      scope="row"
+                      className="px-6 py-5 text-sm font-medium text-ink-700 dark:text-ink-200"
+                    >
+                      {row.dimension}
+                    </th>
+                    <td className="px-6 py-5">
+                      <div className="flex gap-2.5 text-sm text-ink-800 dark:text-ink-100">
+                        <span className="mt-0.5 shrink-0 text-verdant-600 dark:text-verdant-300" aria-hidden="true">
+                          <CheckIcon />
+                        </span>
+                        <span>{row.ours}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-5">
+                      <div className="flex gap-2.5 text-sm text-ink-500 dark:text-ink-400">
+                        <span className="mt-0.5 shrink-0 text-ink-400 dark:text-ink-500" aria-hidden="true">
+                          <DashIcon />
+                        </span>
+                        <span>{row.others}</span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-        {/* Stacked cards (mobile) */}
-        <div className="mt-8 grid gap-4 md:hidden">
-          {ROWS.map((row) => (
-            <Card key={row.dimension} className="p-5">
-              <p className="text-sm font-semibold text-ink-700">{row.dimension}</p>
-              <div className="mt-3 flex gap-2.5 text-sm text-ink-800">
-                <span className="mt-0.5 shrink-0 text-verdant-600" aria-hidden="true">
-                  <CheckIcon />
-                </span>
-                <span>{row.ours}</span>
-              </div>
-              <div className="mt-2.5 flex gap-2.5 text-sm text-ink-500">
-                <span className="mt-0.5 shrink-0 text-ink-400" aria-hidden="true">
-                  <DashIcon />
-                </span>
-                <span>{row.others}</span>
-              </div>
-            </Card>
-          ))}
-        </div>
+          {/* Stacked cards (mobile). No column headers here, so each side is
+              named in text rather than left to the glyph alone. */}
+          <div className="mt-8 grid gap-4 md:hidden">
+            {ROWS.map((row) => (
+              <Card key={row.dimension} className="p-5">
+                <p className="text-sm font-semibold text-ink-700 dark:text-ink-200">
+                  {row.dimension}
+                </p>
+                <div className="mt-3 flex gap-2.5 text-sm text-ink-800 dark:text-ink-100">
+                  <span className="mt-0.5 shrink-0 text-verdant-600 dark:text-verdant-300" aria-hidden="true">
+                    <CheckIcon />
+                  </span>
+                  <span>
+                    <span className="sr-only">WaterQualityLens: </span>
+                    {row.ours}
+                  </span>
+                </div>
+                <div className="mt-2.5 flex gap-2.5 text-sm text-ink-500 dark:text-ink-400">
+                  <span className="mt-0.5 shrink-0 text-ink-400 dark:text-ink-500" aria-hidden="true">
+                    <DashIcon />
+                  </span>
+                  <span>
+                    <span className="sr-only">Common approaches: </span>
+                    {row.others}
+                  </span>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </Reveal>
       </Container>
     </Section>
   );

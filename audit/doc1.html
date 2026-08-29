@@ -1,0 +1,1110 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>taptoglass.com — Full Audit Report</title>
+<link rel="stylesheet" href="style.css"></head><body>
+
+<!-- ═══════════════ COVER ═══════════════ -->
+<div class="cover"><div class="cover-inner">
+  <div class="eyebrow">Portfolio Technical &amp; Commercial Audit</div>
+  <h1>Full Audit<br>Report</h1>
+  <div class="domain">taptoglass.com</div>
+  <p class="sub">A Fortune&nbsp;500–standard assessment of the WaterQualityLens
+  address-level tap-water intelligence property: front-end architecture, data
+  layer, brand system, SEO, accessibility, security posture, privacy compliance
+  and monetization readiness.</p>
+
+  <div class="gradebox">
+    <div class="g"><div class="val">C+</div><div class="lbl">Overall Grade</div></div>
+    <div class="g"><div class="val">A&minus;</div><div class="lbl">Engineering Craft</div></div>
+    <div class="g"><div class="val">D+</div><div class="lbl">Launch Readiness</div></div>
+  </div>
+
+  </div>
+
+  <div class="meta">
+    <span>Audit date: 29 August 2026</span>
+    <span>Codebase: kevynsgrin-a11y/WaterLens @ 79424b3</span>
+    <span>Document 1 of 2</span>
+  </div>
+</div>
+
+<!-- ═══════════════ 00 SCOPE ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">00</span>Scope, Method &amp; Evidence Standard</h2>
+
+<p class="lede">This audit was conducted against the deployed codebase for
+taptoglass.com. Every finding below is traceable to a file, a build artifact, or
+a command output reproduced in this document. Nothing is asserted from memory.</p>
+
+<h3>Method actually executed</h3>
+<p>The audit environment had <strong>no outbound web egress</strong>. The network
+policy governing this session refused <code>CONNECT</code> to every external host
+tested, including the target domain and a neutral control:</p>
+
+<div class="evidence"><span class="hd">Egress verification — proxy status endpoint</span>"recentRelayFailures": [ {
+  "kind": "connect_rejected",
+  "detail": "gateway answered 403 to CONNECT (policy denial or upstream failure)",
+  "host": <span class="k">"taptoglass.com:443"</span>
+} ]
+
+<span class="k">$</span> WebFetch https://example.com/   →  EGRESS_BLOCKED  (control host also refused)</div>
+
+<p>This is a restriction of the audit environment, <strong>not</strong> evidence
+about the site's availability. Because live probing was impossible, the audit was
+re-based on the strongest evidence actually obtainable: the source of record plus
+a <strong>real production build</strong> executed locally. That build is the primary
+evidence for every rendered artifact cited here — the emitted <code>&lt;head&gt;</code>,
+<code>robots.txt</code>, <code>sitemap.xml</code>, <code>manifest.webmanifest</code>,
+route table and byte-level asset sizes are all measured, not estimated.</p>
+
+<div class="callout warn"><span class="t">Two dimensions cannot be graded from source</span>
+<strong>Indexing &amp; Discoverability</strong> and <strong>measured Core Web Vitals</strong>
+require a live origin and live search-engine state. They are reported as
+<em>NOT VERIFIED</em> rather than assigned a speculative grade. Every other
+dimension is graded on measured evidence. <strong>Served</strong> security headers
+are likewise unverifiable: the configuration is graded, with the caveat that a
+CDN or static export in front of the app could add or strip headers.</div>
+
+<h3>Evidence base</h3>
+<dl class="kv">
+  <dt>Source of record</dt><dd>kevynsgrin-a11y/WaterLens, branch <code>main</code>, commit <code>79424b3</code></dd>
+  <dt>Build executed</dt><dd><code>next build</code> — compiled successfully, 47 static pages generated</dd>
+  <dt>Typecheck</dt><dd><code>tsc --noEmit</code> — clean on both frontend and backend</dd>
+  <dt>Test suite</dt><dd><code>vitest run</code> — 45/45 passing across 5 files</dd>
+  <dt>Artifacts read</dt><dd>Generated <code>robots.txt</code>, <code>sitemap.xml</code>, <code>manifest.webmanifest</code>, prerendered HTML for 11 routes, full static asset manifest</dd>
+</dl>
+
+<h3>Grading scale</h3>
+<p>Applied at the standard of a funded consumer web property, not a side project.
+A dimension is graded on what a paying user or a search engine actually receives.</p>
+
+<table>
+<tr><th style="width:16mm">Grade</th><th style="width:22mm">Band</th><th>Definition</th></tr>
+<tr><td><strong class="gA">A</strong></td><td>90–100</td><td>Ships at Fortune 500 standard. No material defect. Would survive external review.</td></tr>
+<tr><td><strong class="gB">B</strong></td><td>80–89</td><td>Strong. Defects are known, bounded, and do not block launch or revenue.</td></tr>
+<tr><td><strong class="gC">C</strong></td><td>70–79</td><td>Functional, but with material gaps that cap scale, trust, or monetization.</td></tr>
+<tr><td><strong class="gD">D</strong></td><td>60–69</td><td>Significant defects. Remediation required before the dimension can be relied on.</td></tr>
+<tr><td><strong class="gF">F</strong></td><td>&lt;60</td><td>Not fit for purpose.</td></tr>
+</table>
+</div>
+
+<!-- ═══════════════ 01 EXEC ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">01</span>Executive Summary</h2>
+
+<p class="lede">taptoglass.com is a genuinely well-engineered front-end wrapped
+around a data layer that cannot yet fulfil the product's central promise. The
+craft is top-decile; the substance is pre-launch. That gap — not any individual
+bug — is the finding that governs this report.</p>
+
+<h3>The headline</h3>
+<p>The site invites the visitor to "enter your US home address." In the shipped
+build, exactly <strong>three</strong> water systems resolve to a full report:
+Flint&nbsp;MI, Newark&nbsp;NJ, and a Travis County&nbsp;TX district. Every other
+US address falls through to a ZIP-registry path that returns violations but
+<strong>zero contaminant detections</strong> — and because the filter-matching
+engine keys strictly off detections, it therefore returns
+<strong>zero filter recommendations</strong>. Outside three cities the product
+shows no hardware, which means it also earns no affiliate revenue.</p>
+
+<div class="callout crit"><span class="t">The commercial consequence, stated plainly</span>
+The monetization surface is live for approximately <strong>0.1% of the US
+population</strong> by construction. This is not a traffic problem or a
+conversion problem — it is a coverage problem in <code>web/lib/data.ts</code>,
+where <code>DEMO_SYSTEMS</code> contains three hand-written entries. Until that
+table is fed by the real ingestion pipeline, no amount of SEO or content work
+can produce revenue.</div>
+
+<h3>What is genuinely excellent</h3>
+<p>The engineering deserves explicit credit. The shared JavaScript payload is
+<strong>87.1&nbsp;kB</strong> — roughly half the Next.js median. There are no
+third-party scripts, no analytics, no ad tech, no cookies, and no web fonts
+fetched over the network. Accessibility is not retrofitted: skip link, correct
+landmarks, <code>aria-invalid</code>/<code>aria-describedby</code> error wiring,
+Escape-to-close with focus return, a reduced-motion floor, and a no-JS fallback
+that renders content visible rather than trapping it behind an observer that
+will never fire. The affiliate disclosure is better than most public companies
+manage. The set-cover recommendation engine refuses partial matches on principle
+and isolates NSF&nbsp;42/372 so an aesthetic certification can never satisfy a
+health hazard — a defensible, genuinely differentiated position.</p>
+
+<h3>What blocks launch</h3>
+<ol class="tight">
+<li><strong>Domain/brand mismatch.</strong> Every user-visible string, the manifest,
+the copyright line and the affiliate redirect domain say "WaterQualityLens."
+The domain is taptoglass.com. The canonical origin <em>defaults</em> to
+<code>waterqualitylens.com</code> and there is no environment file or deploy
+config in the repository that sets it otherwise.</li>
+<li><strong>No privacy policy, no terms, no contact method.</strong> The legal page
+is a self-described summary that "does not replace formal terms." There is no
+email address anywhere on the site. For a YMYL health topic this is an E-E-A-T
+liability, and it independently disqualifies the site from AdSense and most
+affiliate programs.</li>
+<li><strong>Undisclosed third-party data transmission.</strong> User-entered home
+addresses are sent to the US Census geocoder and EPA Envirofacts. Neither is
+mentioned in the privacy summary.</li>
+<li><strong>Data coverage.</strong> Three systems, as above.</li>
+</ol>
+
+<h3>Overall grade: C+</h3>
+<p>The front-end, taken alone, earns an A&minus;. The property as a whole cannot
+be graded on its front-end, because a visitor outside three cities receives an
+empty result and a visitor anywhere receives no privacy policy. The overall grade
+reflects a site that is <strong>architecturally ready and substantively not</strong>.
+The remediation path is unusually short: most of the gap is configuration,
+content, and one data-ingestion connection — not rearchitecture.</p>
+</div>
+
+<!-- ═══════════════ 02 SCORECARD ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">02</span>Dimensional Scorecard</h2>
+
+<table class="grades">
+<tr><th>Dimension</th><th>Grade</th><th>Band</th><th>Governing finding</th></tr>
+
+<tr><td><strong>Visual Design &amp; Brand</strong></td><td class="gB">B+</td><td>87</td>
+<td>Token system and dark-mode handling are A-grade craft; brand identity contradicts the domain on every page.</td></tr>
+
+<tr><td><strong>UX / Information Architecture</strong></td><td class="gB">B+</td><td>86</td>
+<td>Answer-first report design and honest confidence tiering; no coverage expectation set before the user invests an address.</td></tr>
+
+<tr><td><strong>Front-end Architecture</strong></td><td class="gA">A&minus;</td><td>91</td>
+<td>Server-first, tiny client islands, single source of truth for origin, clean typecheck. Zero frontend tests.</td></tr>
+
+<tr><td><strong>Performance &amp; Assets</strong></td><td class="gA">A&minus;</td><td>90</td>
+<td>87.1&nbsp;kB shared JS, self-hosted preloaded fonts, no raster images. CSS at 58.4&nbsp;kB and 164&nbsp;kB HTML documents are the soft spots.</td></tr>
+
+<tr><td><strong>Back-end / Data Layer</strong></td><td class="gC">C+</td><td>75</td>
+<td>Two disconnected backends. The Worker is well-built but undeployed (placeholder IDs); the web app ships three hardcoded systems.</td></tr>
+
+<tr><td><strong>SEO Foundations</strong></td><td class="gB">B&minus;</td><td>81</td>
+<td>Canonical, OG, sitemap and robots are correctly implemented; the origin default points at the wrong domain and entity pages carry no schema.</td></tr>
+
+<tr><td><strong>Indexing &amp; Discoverability</strong></td><td class="gN">NOT<br>VERIFIED</td><td>&mdash;</td>
+<td>Requires live search-engine state. No egress available. See §00.</td></tr>
+
+<tr><td><strong>Accessibility</strong></td><td class="gA">A&minus;</td><td>90</td>
+<td>Deliberate, systemic, and documented in code comments. Mobile nav lacks a focus trap.</td></tr>
+
+<tr><td><strong>Security Headers</strong></td><td class="gB">B+</td><td>87</td>
+<td>Comprehensive header set including HSTS preload and COOP. <code>script-src 'unsafe-inline'</code> is the material weakness.</td></tr>
+
+<tr><td><strong>Privacy &amp; Compliance</strong></td><td class="gD">C&minus;</td><td>70</td>
+<td>Excellent zero-tracking posture undermined by no policy, no contact, no disclosure of third-party address transmission.</td></tr>
+
+<tr><td><strong>Content Quality &amp; Depth</strong></td><td class="gB">B</td><td>83</td>
+<td>27 substantive contaminant entities averaging ~1,050 words. Only 3 PWS pages — the programmatic engine has no fuel.</td></tr>
+
+<tr><td><strong>PWA / Mobile Experience</strong></td><td class="gC">C+</td><td>76</td>
+<td>Manifest declares an icon path that does not exist in the build. No 192/512 PNG icons, so not installable.</td></tr>
+
+<tr><td><strong>Monetization Readiness</strong></td><td class="gD">C&minus;</td><td>68</td>
+<td>Disclosure quality is exemplary; the revenue surface is inert outside three cities.</td></tr>
+
+<tr style="background:var(--bg-tint) !important"><td><strong style="font-size:11pt">OVERALL</strong></td>
+<td class="gC" style="font-size:15pt">C+</td><td><strong>78</strong></td>
+<td><strong>Exceptional craft, pre-launch substance. Short remediation path.</strong></td></tr>
+</table>
+
+<div class="callout"><span class="t">How to read this scorecard</span>
+The spread between Front-end Architecture (A&minus;) and Monetization Readiness
+(C&minus;) is the whole story of this property. Nothing here suggests the team
+cannot build. It suggests the build ran ahead of the data, the legal scaffolding,
+and the brand decision. Those three are the entire gap.</div>
+</div>
+
+<!-- ═══════════════ 03 STACK ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">03</span>Technical Stack Identification</h2>
+
+<p class="lede">Identified precisely from <code>package.json</code>, lockfiles, build
+output and source. No inference where a version string was available.</p>
+
+<table>
+<tr><th style="width:38mm">Layer</th><th style="width:44mm">Technology</th><th>Evidence &amp; notes</th></tr>
+<tr><td>Framework</td><td>Next.js <strong>14.2.15</strong> (App Router)</td><td>Build banner <code>▲ Next.js 14.2.15</code>. React Server Components by default.</td></tr>
+<tr><td>UI runtime</td><td>React 18.3.1 / React-DOM 18.3.1</td><td>Pinned exact, not caret — deliberate.</td></tr>
+<tr><td>Language</td><td>TypeScript 5.5.3 (web) / 5.6.2 (worker)</td><td>Both typecheck clean under <code>--noEmit</code>.</td></tr>
+<tr><td>Styling</td><td>Tailwind CSS 3.4.10 + PostCSS 8.4.39</td><td>Custom token layer; <code>darkMode: ["class", '[data-theme="dark"]']</code>.</td></tr>
+<tr><td>Typography</td><td>Inter Variable + JetBrains Mono Variable</td><td>Self-hosted <code>.woff2</code> via <code>next/font/local</code>. 47.1&nbsp;kB + 39.5&nbsp;kB. No CDN.</td></tr>
+<tr><td>Share images</td><td><code>next/og</code> (Satori)</td><td>OG card and Apple icon rendered at build time. No raster assets in repo.</td></tr>
+<tr><td>Server boundary</td><td><code>server-only</code> 0.0.1</td><td>Correctly guards <code>lib/lookup.ts</code> from client import.</td></tr>
+<tr><td>Intended backend</td><td>Cloudflare Workers + D1 + KV + Queues + Cron</td><td><code>wrangler.toml</code>; Workers runtime, <code>nodejs_compat</code>.</td></tr>
+<tr><td>Backend testing</td><td>Vitest 2.1.9</td><td>45 tests, 5 files, all passing.</td></tr>
+<tr><td>Third-party runtime</td><td><strong>None</strong></td><td>No analytics, tag manager, ad script, font CDN, or XHR target beyond own origin.</td></tr>
+</table>
+
+<div class="callout good"><span class="t">Architectural note worth preserving</span>
+The zero-third-party posture is a real asset and is rare. It is what makes the
+strict CSP genuinely enforceable, keeps the privacy story clean, and holds the
+JS payload at half the framework median. Any future analytics or ad decision
+should be weighed against the loss of all three.</div>
+
+<h3>The two-backend problem</h3>
+<p>The repository contains two independent implementations of the same domain logic:</p>
+<ul class="tight">
+<li><code>src/</code> — a Cloudflare Worker with D1 schema, SDWIS ingestion, queues,
+cron triggers, auth, and a premium vault. Well-structured, 45 tests.</li>
+<li><code>web/lib/</code> — a re-implementation of geocoding, spatial resolution and
+set-cover matching that runs inside Next.js against bundled data.</li>
+</ul>
+<p>The Worker is <strong>not deployed</strong>. Its configuration still carries
+placeholder bindings:</p>
+<div class="evidence"><span class="hd">wrangler.toml — unpopulated bindings</span>database_id = <span class="k">"REPLACE_WITH_D1_DATABASE_ID"</span>
+id          = <span class="k">"REPLACE_WITH_KV_NAMESPACE_ID"</span></div>
+<p>The live site therefore runs entirely on the Next.js re-implementation and its
+three bundled systems. The Worker's ingestion pipeline — the component that would
+give the site national coverage — has never run against production infrastructure.
+This is the single highest-leverage item in the entire audit.</p>
+</div>
+
+<!-- ═══════════════ 04 VISUAL ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">04</span>Visual Design &amp; Brand System &nbsp;<span class="gB" style="font-size:14pt">B+</span></h2>
+
+<h3>What the design system does well</h3>
+<p>This is a properly constructed token system, not Tailwind defaults with a
+brand colour swapped in. Four semantic ramps (<code>brand</code>, <code>verdant</code>,
+<code>ink</code>, <code>caution</code>) sit above three theme-aware surface
+variables resolved in CSS custom properties, so light and dark are defined in one
+place and every component consumes semantics rather than hexes.</p>
+
+<p>Several decisions show unusual discipline:</p>
+<ul class="tight">
+<li><strong>Alarm colours are barred by policy.</strong> There is no red in the
+palette. The single sanctioned amber surface is the Tier-3 mapping-ambiguity
+banner. For a category whose competitors trade on fear, this is a brand position
+encoded in the token file.</li>
+<li><strong>A real elevation ramp</strong> with brand-tinted shadow colour
+(<code>e1 → card → lift → overlay</code>), so cards read as raised surfaces rather
+than outlined rectangles.</li>
+<li><strong>Fluid display type</strong> with optical tracking that tightens as size
+grows (<code>-0.03em</code> at display-1), plus <code>text-wrap: balance</code> on
+headings and tabular numerals on all data.</li>
+<li><strong>Dark mode handles all three states correctly</strong> — explicit light,
+explicit dark, and OS-preference — with a pre-paint bootstrap that stamps
+<code>data-theme</code> before first paint, eliminating flash.</li>
+<li><strong>A print stylesheet exists and is thoughtful.</strong> It strips chrome,
+forces light surfaces, expands link hrefs, and sets <code>break-inside: avoid</code>
+on evidence blocks. The stated intent — that a resident can take the report to a
+landlord or council meeting — is actually implemented.</li>
+</ul>
+
+<h3>Why this is not an A</h3>
+<div class="callout crit"><span class="t">The brand does not match the domain</span>
+Every rendered title, the application name, the manifest, the JSON-LD Organization
+node, the footer copyright and the affiliate redirect subdomain all read
+<strong>WaterQualityLens</strong>. The property is <strong>taptoglass.com</strong>.
+A consumer brand whose name never appears on its own site has no brand system at
+all, however good the tokens are. Measured from the built HTML:</div>
+
+<div class="evidence"><span class="hd">Built output — /index.html &lt;head&gt;</span>&lt;title&gt;<span class="k">WaterQualityLens</span> — What's in your tap water, and what removes it&lt;/title&gt;
+&lt;meta name="application-name" content=<span class="k">"WaterQualityLens"</span>/&gt;
+
+<span class="hd" style="margin-top:2mm">Built output — /manifest.webmanifest</span>"name":"<span class="k">WaterQualityLens</span> — address-level tap water quality intelligence"
+"short_name":"<span class="k">WaterQualityLens</span>"
+
+<span class="hd" style="margin-top:2mm">web/lib/data.ts — affiliate redirect host</span>affiliate_url: "https://affil.<span class="k">waterqualitylens.com</span>/frizzlife-m800"</div>
+
+<p>Secondary deductions: there is no logo lockup or brand-asset file beyond an
+inline SVG mark; <code>DESIGN.md</code> documents intent but there is no
+distributable brand guideline; and the OG share card carries the wrong name, so
+every social impression reinforces the mismatch.</p>
+</div>
+
+<!-- ═══════════════ 05 UX ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">05</span>UX &amp; Information Architecture &nbsp;<span class="gB" style="font-size:14pt">B+</span></h2>
+
+<h3>Information architecture</h3>
+<p>Flat, legible, and correctly scoped for a utility. Seven top-level destinations,
+each with a clear job: the lookup (<code>/</code>), the report (<code>/results</code>),
+two entity indexes (<code>/pws</code>, <code>/contaminants</code>), a commercial
+registry (<code>/registry</code>), and two institutional pages
+(<code>/methodology</code>, <code>/about</code>) plus <code>/legal</code>.
+Breadcrumbs are present on institutional and entity pages and emit matching
+<code>BreadcrumbList</code> JSON-LD from the same array — so the visible trail and
+the structured data cannot drift apart. That is a detail most teams get wrong.</p>
+
+<h3>The report experience</h3>
+<p>The results page is the product, and it is well-designed. The verdict comes
+first, above the fold, before any explanation. A confidence banner states the
+match tier in plain language and does not hide a low-confidence result. Commercial
+hardware is deliberately rendered <em>after</em> the objective data — the ordering
+is enforced in the component tree and commented as policy. Four distinct empty
+states are implemented (<em>no address</em>, <em>no match</em>, <em>clean water</em>,
+<em>no samples</em>) rather than one generic blank.</p>
+
+<div class="callout good"><span class="t">Honest uncertainty as a design principle</span>
+The three-tier confidence model is surfaced to the user with its numeric
+confidence, a human label, and — at Tier 3 — a warning banner plus lab-test
+advice. Most tools in this category present a single unqualified answer. Showing
+the seam is the harder and better choice, and it is the site's strongest trust asset.</div>
+
+<h3>Where UX loses points</h3>
+<ol class="tight">
+<li><strong>No coverage expectation is set before the ask.</strong> The hero invites
+any US address. Three will work fully. A user in Denver enters their home address,
+waits, and receives a result with no contaminants and no filters — indistinguishable,
+to them, from "your water is fine." That is the most damaging possible failure mode
+for a trust-first brand.</li>
+<li><strong>The example addresses conceal the limit.</strong> Flint, Newark and
+Austin are offered as samples; all three are inside coverage. The samples
+demonstrate a capability the product does not generally have.</li>
+<li><strong><code>/pws</code> is thin</strong> — 394 rendered words listing three
+systems. It reads as a placeholder, because it is one.</li>
+<li><strong>No filtering or search on <code>/contaminants</code></strong> (27 entries)
+or <code>/registry</code>. Fine now; a scale problem the moment coverage grows.</li>
+<li><strong>No persistence.</strong> No saved addresses, no recent lookups, no share
+link affordance — though the Worker backend implements saved addresses and alerts,
+none of it is reachable from the web UI.</li>
+</ol>
+</div>
+
+<!-- ═══════════════ 06 FRONTEND ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">06</span>Front-end Architecture &nbsp;<span class="gA" style="font-size:14pt">A&minus;</span></h2>
+
+<p class="lede">The strongest dimension in the audit. Server-first by default,
+with client interactivity confined to four small islands.</p>
+
+<h3>Composition</h3>
+<p>Only four components carry <code>"use client"</code>: <code>AddressSearch</code>,
+<code>ThemeToggle</code>, <code>MobileNav</code>, and <code>Reveal</code>. Everything
+else — including all entity pages, the entire results report, and every data
+visualisation — renders on the server. The measured consequence is a homepage
+route contributing <strong>2.71&nbsp;kB</strong> on top of the shared bundle.</p>
+
+<div class="evidence"><span class="hd">next build — route table (excerpt)</span>Route (app)                     Size      First Load JS
+┌ ○ /                            2.71 kB   <span class="k">96.6 kB</span>
+├ ● /contaminants/[code]         199 B     94.1 kB   <span class="k">[27 paths prerendered]</span>
+├ ● /pws/[pwsid]                 199 B     94.1 kB   <span class="k">[3 paths prerendered]</span>
+├ ƒ /results                     3.02 kB   96.9 kB
+└ ƒ /api/lookup                  0 B       0 B
++ First Load JS shared by all              <span class="k">87.1 kB</span></div>
+
+<h3>Discipline worth noting</h3>
+<ul class="tight">
+<li><strong>Single source of truth for the origin.</strong> <code>lib/site.ts</code>
+exists specifically because the URL was previously duplicated across layout,
+sitemap and robots — and the fix is documented in the file's own comment. The
+pattern is right; only its default value is wrong (§08).</li>
+<li><strong><code>server-only</code> is actually used</strong>, so the lookup engine
+cannot be pulled into a client bundle by accident.</li>
+<li><strong>The sitemap's indexability gate mirrors the page's</strong>, with a comment
+in both files instructing that they must stay in step — a real crawl-budget
+concern, handled deliberately.</li>
+<li><strong>Progressive enhancement is explicit.</strong> The scroll-reveal hidden
+state is gated behind a <code>.js</code> class set by the bootstrap script, so with
+scripting disabled every section renders visible. The comment states the principle:
+"an animation must never be the thing that decides whether a section can be read."</li>
+</ul>
+
+<h3>Deductions</h3>
+<ul class="tight">
+<li><strong>Zero frontend tests.</strong> The backend has 45; <code>web/</code> has none.
+The set-cover engine, the tier resolver and the exceedance math were all
+re-implemented in <code>web/lib/</code> and are entirely untested there. Two copies
+of safety-critical logic, one tested.</li>
+<li><strong>Duplicated domain logic</strong> between <code>src/services/</code> and
+<code>web/lib/</code> will drift. It is already inconsistent: the web
+<code>resolveSpatial</code> has no Tier-2 path at all.</li>
+<li><strong>The theme bootstrap forces <code>'unsafe-inline'</code></strong> in the CSP
+(§10). Solvable with a nonce or hash.</li>
+</ul>
+</div>
+
+<!-- ═══════════════ 07 PERF ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">07</span>Performance &amp; Assets &nbsp;<span class="gA" style="font-size:14pt">A&minus;</span></h2>
+
+<p class="lede">All figures below are measured from the production build, not estimated.</p>
+
+<table>
+<tr><th>Metric</th><th style="width:26mm">Measured</th><th>Assessment</th></tr>
+<tr><td>Shared First Load JS</td><td><strong>87.1 kB</strong></td><td>Excellent. Roughly half the Next.js App Router median.</td></tr>
+<tr><td>Homepage First Load JS</td><td><strong>96.6 kB</strong></td><td>Excellent for a page with animated SVG and a live form.</td></tr>
+<tr><td>Total JS emitted</td><td>695.2 kB</td><td>Includes a 110 kB legacy polyfill chunk served only to old browsers.</td></tr>
+<tr><td>CSS</td><td><strong>58.4 kB</strong></td><td><span class="pill p-med">Soft spot</span> Large for this surface area. Uncompressed; ~9–11 kB gzipped, but worth auditing.</td></tr>
+<tr><td>Fonts</td><td>47.1 kB + 39.5 kB</td><td>Self-hosted variable woff2. Sans preloaded, mono correctly <em>not</em> preloaded.</td></tr>
+<tr><td>Raster images</td><td><strong>0</strong></td><td>41 inline SVGs. No image CLS surface, no <code>next/image</code> needed.</td></tr>
+<tr><td>HTML document size</td><td>59–168 kB</td><td><span class="pill p-med">Soft spot</span> RSC payload inflates documents. /pws/NJ0714001 is 168 kB for 1,047 words.</td></tr>
+<tr><td>Static pages prerendered</td><td>47</td><td>Only <code>/results</code> and <code>/api/lookup</code> are dynamic.</td></tr>
+</table>
+
+<h3>Core Web Vitals — reasoned, not measured</h3>
+<div class="callout warn"><span class="t">NOT VERIFIED — field data requires a live origin</span>
+No CrUX or Lighthouse data could be obtained. The following are structural
+predictions from the build, and should be confirmed with a real Lighthouse run
+once the origin is reachable.</div>
+
+<ul class="tight">
+<li><strong>CLS — expected excellent.</strong> No raster images, no ad slots, no
+embeds, fonts preloaded with <code>display: swap</code> and matched fallback
+stacks. The scroll-reveal animates <code>opacity</code> and <code>transform</code>
+only, which do not trigger layout.</li>
+<li><strong>LCP — excellent on static routes, at risk on <code>/results</code>.</strong>
+The results route is <code>force-dynamic</code> and awaits a live Census geocode
+with an 8-second timeout <em>inside</em> the render path. A slow upstream directly
+becomes a slow LCP. A <code>loading.tsx</code> exists, which mitigates perceived
+latency but not the metric.</li>
+<li><strong>INP — expected excellent.</strong> Four small client islands; no heavy
+main-thread work.</li>
+</ul>
+
+<div class="callout"><span class="t">Recommendation</span>
+Move the geocode + lookup behind a <code>&lt;Suspense&gt;</code> boundary so the
+report shell streams immediately and the data region resolves independently. This
+converts an upstream-dependent LCP into an upstream-dependent content paint.</div>
+</div>
+
+<!-- ═══════════════ 08 BACKEND ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">08</span>Back-end &amp; Data Layer &nbsp;<span class="gC" style="font-size:14pt">C+</span></h2>
+
+<p class="lede">The weakest structural dimension, and the one that governs the
+overall grade. The architecture is sound; the deployment and the data are not.</p>
+
+<h3>Data inventory — what actually ships</h3>
+<table>
+<tr><th>Dataset</th><th style="width:22mm">Count</th><th>Assessment</th></tr>
+<tr><td>Public water systems (<code>DEMO_SYSTEMS</code>)</td><td><strong>3</strong></td><td><span class="pill p-crit">Critical</span> Flint MI, Newark NJ, Clear Springs TX. Hand-written literals.</td></tr>
+<tr><td>Contaminant definitions</td><td>27</td><td>Solid. MCL, MCLG, unit, category, priority, health-effect narrative each.</td></tr>
+<tr><td>Filter SKUs</td><td>11</td><td>Reasonable seed. Each with form factor, price, capacity, affiliate URL.</td></tr>
+<tr><td>Certification claims</td><td>27 rows</td><td>Per-SKU, per-standard, per-contaminant, with certifier attribution.</td></tr>
+<tr><td>NSF/ANSI standards modelled</td><td>6</td><td>42, 53, 58, 401, 372 + retired P473 correctly flagged obsolete.</td></tr>
+</table>
+
+<h3>The coverage cliff, traced through the code</h3>
+<p>A lookup outside the three bundled polygons follows this path:</p>
+<div class="evidence"><span class="hd">web/lib/lookup.ts — zipFallback()</span>// Live path exposes verified violations; sample-level detections require the
+// full weekly ingestion (backend), so recommendations key off violation codes.
+return assemble(
+  query, coordinate, match, primary, <span class="k">[]</span>, violations, dwelling, "ZIP_REGISTRY", ...
+);                                  <span class="k">↑ detections = empty array</span>
+
+<span class="hd" style="margin-top:2mm">web/lib/engine.ts — matchFilters()</span>const hazards = new Set(detections.filter(d =&gt; d.exceeds_health_goal).map(d =&gt; d.code));
+if (hazards.size === 0) return <span class="k">[]</span>;   <span class="k">← no detections ⇒ no recommendations</span></div>
+
+<p>The chain is deterministic: outside three systems there are no detections;
+with no detections there are no hazards; with no hazards the recommendation
+engine returns an empty array. The user sees a utility name, possibly some
+violations, and <strong>no filters</strong>. The comment in the source is candid
+that this awaits "the full weekly ingestion (backend)" — the backend that has
+never been deployed.</p>
+
+<h3>Resilience</h3>
+<p>Credit where due: geocoding has a genuine fallback. When the Census endpoint
+fails or times out (8s abort), <code>gazetteerLookup()</code> resolves bundled
+locality centroids so demo-coverage addresses still work, and returns
+<code>null</code> outside that coverage rather than guessing. The comment states
+the reasoning explicitly. The Worker layer adds <code>withRetry()</code> with
+exponential backoff and KV caching tiered by data volatility (30d geocode / 24h
+lookup / 7d SDWIS). These are correct instincts.</p>
+
+<h3>Defects</h3>
+<ol class="tight">
+<li><strong>No rate limiting anywhere.</strong> <code>/api/lookup</code> accepts
+unbounded requests, each capable of triggering an outbound call to a no-SLA
+government geocoder. This is both an abuse vector and a route to being blocked
+by Census.</li>
+<li><strong>Worker CORS is fully open.</strong> <code>src/lib/http.ts</code> sets
+<code>access-control-allow-origin: *</code> on <em>every</em> response, including
+authenticated vault and saved-address routes, with <code>authorization</code> in
+the allowed headers. Bearer-token auth limits the classic CSRF exposure, but this
+also means the curated certification dataset — described in the README as the
+platform's defensive moat — is readable by any origin.</li>
+<li><strong>PBKDF2 at 100,000 iterations.</strong> Below the OWASP guidance of
+600,000 for PBKDF2-HMAC-SHA256. The construction is otherwise correct: per-user
+random salt, constant-time comparison, parameters stored with the hash.</li>
+<li><strong>Single upstream dependency.</strong> Census geocoding has no commercial
+fallback outside bundled coverage.</li>
+</ol>
+</div>
+
+<!-- ═══════════════ 09 SEO ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">09</span>SEO Foundations &nbsp;<span class="gB" style="font-size:14pt">B&minus;</span></h2>
+
+<h3>Implemented correctly</h3>
+<p>The mechanics are genuinely well done. Verified from the built artifacts:
+self-referencing canonicals on 9 of 10 routes; complete Open Graph and Twitter
+card sets with a build-generated 1200×630 share image; a data-driven sitemap whose
+<code>lastmod</code> reflects the newest sample date rather than the build time;
+and a correct <code>robots.txt</code>.</p>
+
+<div class="evidence"><span class="hd">Built output — robots.txt (with origin correctly set)</span>User-Agent: *
+Allow: /
+Disallow: /api
+
+Host: https://taptoglass.com
+Sitemap: https://taptoglass.com/sitemap.xml</div>
+
+<p>The <code>/results</code> route is excluded from the index three ways — a
+per-page <code>robots</code> directive, an <code>X-Robots-Tag</code> response
+header, and deliberate <em>absence</em> from <code>robots.txt</code>
+<code>Disallow</code>. The last is the subtle one, and the source comments explain
+it: a crawler blocked by <code>robots.txt</code> can never read the
+<code>noindex</code>. That is a level of care most audits never find.</p>
+
+<h3>The critical SEO defect</h3>
+<div class="callout crit"><span class="t">The canonical origin defaults to the wrong domain</span>
+<code>web/lib/site.ts</code> resolves the origin as
+<code>process.env.NEXT_PUBLIC_SITE_URL ?? "https://waterqualitylens.com"</code>.
+There is <strong>no <code>.env</code> file, no <code>vercel.json</code>, no CI
+workflow, and no deployment configuration anywhere in the repository</strong> that
+sets that variable. If it is not set in the hosting environment, then every
+canonical tag, every <code>og:url</code>, every sitemap entry, the
+<code>robots.txt</code> <code>Host</code> and <code>Sitemap</code> directives, and
+every JSON-LD <code>@id</code> on taptoglass.com will point at
+<strong>waterqualitylens.com</strong>. A site whose canonicals all name a
+different domain is instructing Google to attribute — and potentially
+consolidate — the entire property elsewhere.</div>
+
+<p>The audit build was run with the variable set explicitly, which is how the
+correct <code>taptoglass.com</code> output above was produced. That demonstrates
+the mechanism works; it does not demonstrate the variable is set in production.
+<strong>This must be verified against the live origin as the first action after
+this audit.</strong></p>
+
+<h3>Structured data coverage</h3>
+<table>
+<tr><th>Route</th><th style="width:20mm">Canonical</th><th style="width:20mm">OG</th><th>JSON-LD present</th></tr>
+<tr><td><code>/</code></td><td>✓</td><td>✓</td><td>Organization, WebSite, SearchAction, FAQPage</td></tr>
+<tr><td><code>/pws/[pwsid]</code></td><td>✓</td><td>✓</td><td><span class="pill p-high">BreadcrumbList only</span></td></tr>
+<tr><td><code>/contaminants/[code]</code></td><td>✓</td><td>✓</td><td><span class="pill p-high">BreadcrumbList only</span></td></tr>
+<tr><td><code>/registry</code></td><td>✓</td><td>✓</td><td><span class="pill p-high">BreadcrumbList only</span></td></tr>
+<tr><td><code>/methodology</code>, <code>/about</code>, <code>/legal</code></td><td>✓</td><td>✓</td><td>BreadcrumbList only</td></tr>
+<tr><td><code>/results</code></td><td>n/a — noindex</td><td>n/a</td><td>None (correct)</td></tr>
+</table>
+
+<p>For a property whose growth thesis is programmatic entity pages, the absence of
+entity schema is a significant missed opportunity. <code>/pws/*</code> pages carry
+no <code>Dataset</code> or <code>GovernmentService</code> markup;
+<code>/contaminants/*</code> carry no <code>DefinedTerm</code> or
+<code>MedicalWebPage</code>; <code>/registry</code> carries no
+<code>ItemList</code>/<code>Product</code>. These are the pages built to rank, and
+they are the pages with the least structured data.</p>
+
+<p>Minor items: <code>og:site_name</code> is lost on the homepage because the
+page-level <code>openGraph</code> object overrides the root without re-declaring
+it; <code>twitter:title</code> falls back to the bare brand string rather than the
+page title; and a <code>keywords</code> meta tag is emitted, which is obsolete
+though harmless.</p>
+</div>
+
+<!-- ═══════════════ 10 INDEXING ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">10</span>Indexing &amp; Discoverability &nbsp;<span class="gN" style="font-size:12pt">NOT VERIFIED</span></h2>
+
+<div class="callout warn"><span class="t">This dimension cannot be graded in this environment</span>
+Establishing index status requires live <code>site:</code> queries against Google
+and Bing, Search Console access, or at minimum a live fetch of the origin. All
+outbound HTTP was refused by the session's egress policy (§00). Assigning a grade
+here would mean fabricating the evidence, which would make the entire scorecard
+untrustworthy. It is therefore reported as unverified.</div>
+
+<h3>What can legitimately be said</h3>
+<ul class="tight">
+<li>A general web search for the domain returned <strong>no results</strong> for
+taptoglass.com — only similarly-named unrelated domains. This is weak evidence:
+the search tool is not a <code>site:</code> operator and its index may lag. It is
+<em>consistent with</em> a site that is new or not yet indexed, but does not
+establish it.</li>
+<li>The repository contains <strong>no deployment configuration of any kind</strong> —
+no CI workflow, no <code>vercel.json</code>, no <code>netlify.toml</code>, no
+environment file. Nothing in the source establishes that a deploy has occurred.</li>
+<li>The <strong>indexable surface is 37 URLs</strong>: 7 static routes, 27
+contaminant pages, and 3 PWS pages (the sitemap's quality gate admits all three,
+each having ≥1 detection and ≥2 history points).</li>
+</ul>
+
+<h3>Required verification — first actions once the origin is reachable</h3>
+<ol class="tight">
+<li><code>curl -I https://taptoglass.com/</code> — confirm the origin resolves and
+capture the served header set.</li>
+<li>Fetch <code>/robots.txt</code> and <code>/sitemap.xml</code> and confirm both
+name <strong>taptoglass.com</strong>, not waterqualitylens.com. This is the single
+most important check in the entire audit.</li>
+<li><code>site:taptoglass.com</code> on Google and Bing — record indexed count
+against the expected 37.</li>
+<li>Register the property in Google Search Console and Bing Webmaster Tools;
+submit the sitemap; check the Page Indexing report for
+"Duplicate, Google chose different canonical," which is the signature of the
+origin defect in §09.</li>
+</ol>
+</div>
+
+<!-- ═══════════════ 11 A11Y ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">11</span>Accessibility &nbsp;<span class="gA" style="font-size:14pt">A&minus;</span></h2>
+
+<p class="lede">Accessibility here is systemic rather than retrofitted, and in
+several places the reasoning is documented in the code itself. This is the
+dimension most likely to survive external audit unchanged.</p>
+
+<h3>Verified implementations</h3>
+<table>
+<tr><th style="width:52mm">Area</th><th>Evidence</th></tr>
+<tr><td>Skip link</td><td>First focusable element; <code>sr-only</code> until focused, then fully styled.</td></tr>
+<tr><td>Landmarks</td><td><code>&lt;main id="main"&gt;</code>, <code>&lt;nav aria-label&gt;</code> on primary/mobile/breadcrumb, <code>role="search"</code> on the lookup form.</td></tr>
+<tr><td>Form semantics</td><td><code>sr-only</code> label bound by <code>useId</code>; <code>autoComplete="street-address"</code>; <code>aria-invalid</code> + <code>aria-describedby</code> on error; error node carries <code>role="alert"</code>.</td></tr>
+<tr><td>Grouped controls</td><td>Dwelling selector uses <code>&lt;fieldset&gt;</code> + <code>&lt;legend&gt;</code> with <code>aria-pressed</code> per option.</td></tr>
+<tr><td>Disclosure pattern</td><td>Mobile nav: <code>aria-expanded</code>, <code>aria-controls</code>, dynamic <code>aria-label</code>, Escape closes and returns focus to trigger.</td></tr>
+<tr><td>Current page</td><td><code>aria-current="page"</code> in nav and breadcrumbs.</td></tr>
+<tr><td>Decorative graphics</td><td>78 <code>aria-hidden="true"</code> occurrences across 41 inline SVGs. No raster images, so no missing <code>alt</code> is possible.</td></tr>
+<tr><td>Focus visibility</td><td><code>:focus-visible</code> ring follows each element's own radius, with a contextual <code>--ring-offset</code> so it never draws a white halo on dark bands.</td></tr>
+<tr><td>WCAG 2.2 SC 2.4.11</td><td><code>scroll-margin-top: 5rem</code> applied to all focusable and id-bearing elements to clear the sticky header. Explicitly commented as such.</td></tr>
+<tr><td>Motion</td><td><code>prefers-reduced-motion</code> reduces all animation to 0.01ms and disables smooth scrolling; reveal start-state is neutralised.</td></tr>
+<tr><td>No-JS</td><td>Reveal hidden-state gated behind a <code>.js</code> class, so content renders visible without scripting.</td></tr>
+<tr><td>Data legibility</td><td><code>font-variant-numeric: tabular-nums</code> on all numeric output; <code>ink-500</code> documented as darkened to clear 4.5:1 on the canvas.</td></tr>
+</table>
+
+<h3>Deductions</h3>
+<ul class="tight">
+<li><strong>No focus trap in the mobile navigation panel.</strong> Escape and focus
+return are handled, but focus is never moved into the open panel and can tab out
+of it into the page behind. This is the one clear WCAG gap.</li>
+<li><strong>Dwelling selector uses <code>aria-pressed</code> toggle buttons</strong>
+for what is semantically a single-select group. A <code>radiogroup</code> with
+roving tabindex, or native radios, would convey "choose one of three" correctly.</li>
+<li><strong>No <code>aria-live</code> region for the lookup transition.</strong> The
+button label changes to "Checking…" but a screen-reader user gets no announcement
+that a report is loading or has arrived.</li>
+<li><strong>Unverifiable without a browser:</strong> computed contrast of
+<code>text-brand-200/85</code> on the navy inverse bands, and real focus-order
+traversal. Both need a live Axe/Lighthouse pass.</li>
+</ul>
+</div>
+
+<!-- ═══════════════ 12 SECURITY ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">12</span>Security Headers &nbsp;<span class="gB" style="font-size:14pt">B+</span></h2>
+
+<div class="callout warn"><span class="t">Configuration graded; delivery unverified</span>
+The following is read from <code>web/next.config.mjs</code>. Headers declared in
+<code>next.config</code> are only emitted when the app is served by the Next.js
+runtime. A static export, or a CDN/proxy in front of the origin, can drop or
+override them. <strong>Confirm with <code>curl -I</code> against the live origin.</strong></div>
+
+<table>
+<tr><th style="width:52mm">Header</th><th style="width:14mm">Set</th><th>Value &amp; assessment</th></tr>
+<tr><td>Content-Security-Policy</td><td><span class="pill p-med">Partial</span></td><td>Strict on every directive except <code>script-src 'unsafe-inline'</code>. See below.</td></tr>
+<tr><td>Strict-Transport-Security</td><td><span class="pill p-ok">Yes</span></td><td><code>max-age=63072000; includeSubDomains; preload</code> — 2 years, preload-eligible. Correct.</td></tr>
+<tr><td>X-Content-Type-Options</td><td><span class="pill p-ok">Yes</span></td><td><code>nosniff</code>.</td></tr>
+<tr><td>Referrer-Policy</td><td><span class="pill p-ok">Yes</span></td><td><code>strict-origin-when-cross-origin</code> — appropriate.</td></tr>
+<tr><td>X-Frame-Options</td><td><span class="pill p-ok">Yes</span></td><td><code>SAMEORIGIN</code>, consistent with CSP <code>frame-ancestors 'self'</code>.</td></tr>
+<tr><td>Permissions-Policy</td><td><span class="pill p-ok">Yes</span></td><td><code>geolocation=(), camera=(), microphone=(), payment=(), usb=()</code>.</td></tr>
+<tr><td>Cross-Origin-Opener-Policy</td><td><span class="pill p-ok">Yes</span></td><td><code>same-origin</code>.</td></tr>
+<tr><td>X-Robots-Tag</td><td><span class="pill p-ok">Yes</span></td><td>Scoped to <code>/results</code> and <code>/api/*</code>. Correct use.</td></tr>
+<tr><td>X-Powered-By</td><td><span class="pill p-ok">Removed</span></td><td><code>poweredByHeader: false</code>.</td></tr>
+<tr><td>Cross-Origin-Resource-Policy</td><td><span class="pill p-low">No</span></td><td>Absent. Low risk given no cross-origin embedding.</td></tr>
+<tr><td>CSP <code>report-to</code></td><td><span class="pill p-low">No</span></td><td>No violation telemetry — CSP failures will be silent.</td></tr>
+</table>
+
+<h3>The CSP weakness</h3>
+<p>The policy is otherwise genuinely strict — <code>default-src 'self'</code>,
+<code>object-src 'none'</code>, <code>base-uri 'self'</code>,
+<code>connect-src 'self'</code>, <code>upgrade-insecure-requests</code> — and the
+zero-third-party architecture is what makes that possible. The comment in
+<code>next.config.mjs</code> is honest about why <code>'unsafe-inline'</code> is
+present: Next/Tailwind inject style tags, and the pre-paint theme bootstrap is an
+inline script.</p>
+<p>The <code>style-src 'unsafe-inline'</code> is a pragmatic and widely accepted
+trade-off. The <code>script-src 'unsafe-inline'</code> is the material one: it
+removes CSP's primary defence against injected script. Because there is exactly
+<em>one</em> inline script on the site and its content is a fixed constant, this
+is unusually easy to fix with a SHA-256 hash — no nonce plumbing required. The
+verbatim fix is given as Issue&nbsp;12 in Document&nbsp;2.</p>
+
+<h3>Application-layer security</h3>
+<ul class="tight">
+<li><span class="pill p-ok">Good</span> Input validation on <code>/api/lookup</code>:
+length bounds (5–200), a 2&nbsp;kB body cap checked before parse, JSON parse guarded,
+and an allowlist for <code>dwelling_type</code>.</li>
+<li><span class="pill p-ok">Good</span> No <code>dangerouslySetInnerHTML</code> on
+user data — only on <code>JSON.stringify</code>'d structured data and the constant
+bootstrap script.</li>
+<li><span class="pill p-ok">Good</span> Affiliate links carry
+<code>rel="sponsored noopener noreferrer"</code> — correct for both Google policy
+and tab-nabbing.</li>
+<li><span class="pill p-crit">Gap</span> No rate limiting on any route.</li>
+<li><span class="pill p-high">Gap</span> Worker API returns
+<code>access-control-allow-origin: *</code> on authenticated routes.</li>
+<li><span class="pill p-med">Gap</span> PBKDF2 iteration count below current OWASP guidance.</li>
+</ul>
+</div>
+
+<!-- ═══════════════ 13 PRIVACY ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">13</span>Privacy &amp; Compliance &nbsp;<span class="gD" style="font-size:14pt">C&minus;</span></h2>
+
+<p class="lede">An excellent privacy <em>posture</em> paired with absent privacy
+<em>documentation</em>. The engineering is more privacy-respecting than the legal
+text can demonstrate — which is the wrong way round, and it is what caps the grade.</p>
+
+<h3>The posture is genuinely strong</h3>
+<ul class="tight">
+<li><strong>No analytics of any kind.</strong> No Google Analytics, no tag manager,
+no Plausible, no Vercel Analytics.</li>
+<li><strong>No cookies are set.</strong> The only client storage is a single
+<code>localStorage</code> key, <code>wql-theme</code>, holding the string
+"light" or "dark".</li>
+<li><strong>No third-party scripts, fonts, or pixels.</strong> Verified from the
+built HTML: every asset is same-origin.</li>
+<li><strong>No account required</strong> for the core lookup.</li>
+<li><strong>Geolocation is blocked at the header level</strong> via Permissions-Policy —
+the site asks for an address rather than reading device location.</li>
+<li><strong>The FTC affiliate disclosure is exemplary</strong> — present in the footer
+on every page, restated in full on <code>/legal</code>, attached to every generated
+report, and set at readable size with an explicit code comment that it is
+"legible, not fine print."</li>
+</ul>
+
+<h3>The documentation is not adequate</h3>
+<div class="callout crit"><span class="t">There is no privacy policy and no way to contact anyone</span>
+<code>/legal</code> carries a <em>summary</em> that explicitly describes itself as
+not replacing formal terms. A repository-wide search for a contact address,
+<code>mailto:</code> link, or contact page returns <strong>nothing</strong>. For a
+YMYL health-adjacent topic, Google's quality guidance treats identifiable
+ownership and contactability as core trust signals — and their absence is
+independently disqualifying for AdSense and for most affiliate programmes,
+including Amazon Associates.</div>
+
+<table>
+<tr><th style="width:62mm">Required element</th><th style="width:18mm">Present</th><th>Consequence</th></tr>
+<tr><td>Formal Privacy Policy</td><td><span class="pill p-crit">No</span></td><td>Blocks AdSense; CCPA/GDPR exposure.</td></tr>
+<tr><td>Formal Terms of Service</td><td><span class="pill p-crit">No</span></td><td>No liability limitation for a YMYL tool.</td></tr>
+<tr><td>Contact method</td><td><span class="pill p-crit">No</span></td><td>E-E-A-T penalty; no rights-request channel.</td></tr>
+<tr><td>Publisher identity / ownership</td><td><span class="pill p-crit">No</span></td><td>No named entity behind health guidance.</td></tr>
+<tr><td>Third-party data-sharing disclosure</td><td><span class="pill p-crit">No</span></td><td>Addresses are sent to Census + EPA, undisclosed.</td></tr>
+<tr><td>Cookie / local-storage notice</td><td><span class="pill p-high">No</span></td><td><code>localStorage</code> use undocumented.</td></tr>
+<tr><td>Data-retention statement</td><td><span class="pill p-high">No</span></td><td>Silent on whether addresses are logged.</td></tr>
+<tr><td>"Last updated" date</td><td><span class="pill p-high">No</span></td><td>Policies cannot be versioned or relied on.</td></tr>
+<tr><td>CCPA / GDPR rights section</td><td><span class="pill p-high">No</span></td><td>No documented rights mechanism.</td></tr>
+<tr><td>FTC affiliate disclosure</td><td><span class="pill p-ok">Yes</span></td><td>Best-in-class. Preserve exactly as written.</td></tr>
+<tr><td>Medical / scope disclaimer</td><td><span class="pill p-ok">Yes</span></td><td>Non-dismissible, on every page and report.</td></tr>
+</table>
+
+<div class="callout warn"><span class="t">The material omission</span>
+Every address a visitor types is transmitted to
+<code>geocoding.geo.census.gov</code>, and ZIP-fallback lookups additionally query
+<code>data.epa.gov</code>. Both are US government endpoints and neither is a
+commercial data broker — this is a benign design. But it is <strong>third-party
+transmission of user-entered residential addresses</strong>, and the privacy
+summary states only that an address "is not sold." Users are not told their
+address leaves the site at all. Verbatim remediation is given as Issue&nbsp;7 in
+Document&nbsp;2.</div>
+</div>
+
+<!-- ═══════════════ 14 CONTENT ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">14</span>Content Quality, Depth &amp; Topical Authority &nbsp;<span class="gB" style="font-size:14pt">B</span></h2>
+
+<p class="lede">Measured word counts from the rendered production build — not
+source estimates.</p>
+
+<table>
+<tr><th>Route</th><th style="width:24mm">Rendered words</th><th>Assessment</th></tr>
+<tr><td><code>/methodology</code></td><td><strong>1,260</strong></td><td>The site's strongest asset. Genuine methodological transparency.</td></tr>
+<tr><td><code>/contaminants/PB90</code> (Lead)</td><td>1,122</td><td>Substantive entity page with health-effect narrative and provenance.</td></tr>
+<tr><td><code>/</code></td><td>1,117</td><td>Good depth for a landing page; carries FAQPage schema.</td></tr>
+<tr><td><code>/contaminants/PFOA</code></td><td>1,059</td><td>Strong. PFAS is the highest-value topic in the niche.</td></tr>
+<tr><td><code>/pws/NJ0714001</code> (Newark)</td><td>1,047</td><td>Demonstrates the entity-page template works well.</td></tr>
+<tr><td><code>/contaminants</code> (index)</td><td>872</td><td>Reasonable hub page.</td></tr>
+<tr><td><code>/registry</code></td><td>856</td><td>Differentiated content — the deceptive-certification angle.</td></tr>
+<tr><td><code>/legal</code></td><td>756</td><td>Well-written, but a summary rather than a policy (§13).</td></tr>
+<tr><td><code>/about</code></td><td>582</td><td>Thin, and carries no named author or credentials.</td></tr>
+<tr><td><code>/pws</code> (index)</td><td><strong>394</strong></td><td><span class="pill p-high">Thin</span> Three entries. Reads as a placeholder.</td></tr>
+</table>
+
+<h3>Strengths</h3>
+<p>The editorial position is the product's real moat. Three ideas are executed
+consistently and are genuinely hard for a competitor to copy:</p>
+<ol class="tight">
+<li><strong>Provenance on every number.</strong> Each detection carries value, unit,
+sample date, testing agency, MCL and MCLG. Nothing is asserted without its source.</li>
+<li><strong>Certification literacy.</strong> The site teaches that NSF&nbsp;42 and
+372 cannot satisfy a health contaminant, and the <code>/registry</code> page names
+SKUs that market those standards with no health certification. This is
+consumer-protection content with commercial utility — an unusual and defensible
+combination.</li>
+<li><strong>Refusal of artificial precision.</strong> Partial filter matches are
+programmatically eliminated rather than shown with a caveat. The
+nitrate/nitrite warning explicitly tells users that carbon filters
+<em>will not</em> protect them — advice that steers toward the more expensive
+product for a defensible technical reason, which is the correct way to hold that
+tension.</li>
+</ol>
+
+<h3>Gaps</h3>
+<ul class="tight">
+<li><strong>No author, no credentials, no named publisher.</strong> For YMYL content
+this is the largest E-E-A-T deficit on the site, larger than any technical SEO item.</li>
+<li><strong>No outbound citations.</strong> EPA, NSF and TEMM are named but never
+linked. Authoritative outbound links are a positive quality signal, and their
+absence on a data-provenance site is conspicuous.</li>
+<li><strong>Three entity pages.</strong> The programmatic template is good; there is
+nothing to run it on.</li>
+<li><strong>No editorial layer.</strong> No guides, no comparisons, no "how to read
+your CCR," nothing targeting the informational queries that would feed the tool.</li>
+<li><strong>No freshness signals.</strong> No "last reviewed" dates on entity pages.</li>
+</ul>
+</div>
+
+<!-- ═══════════════ 15 PWA ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">15</span>PWA &amp; Mobile Experience &nbsp;<span class="gC" style="font-size:14pt">C+</span></h2>
+
+<h3>Verified manifest defect</h3>
+<div class="callout crit"><span class="t">The manifest advertises an icon that does not exist</span>
+The generated manifest declares <code>"src": "/apple-icon.png"</code>. The build
+emits no such route. The only icon route produced is <code>/apple-icon</code>.
+Confirmed against the build's own route manifest:</div>
+
+<div class="evidence"><span class="hd">.next/server/app-paths-manifest.json</span>"/icon.svg/route":            "app/icon.svg/route.js"
+"/manifest.webmanifest/route": "app/manifest.webmanifest/route.js"
+"/apple-icon/route":           "app/apple-icon/route.js"   <span class="k">← no .png variant exists</span>
+
+<span class="hd" style="margin-top:2mm">Generated manifest.webmanifest</span>"icons":[
+  {"src":"/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"},
+  {"src":<span class="k">"/apple-icon.png"</span>,"sizes":"180x180","type":"image/png"}   <span class="k">← 404</span>
+]</div>
+
+<p>The irony is that the source comment on <code>apple-icon.tsx</code> states
+"The manifest advertises this path, so without it every page load 404s on the
+icon request" — the author anticipated exactly this failure and the path still
+does not match. The HTML <code>&lt;link rel="apple-touch-icon"&gt;</code> is
+correct (<code>/apple-icon?hash</code>); only the manifest entry is wrong.</p>
+
+<h3>Installability</h3>
+<p>Chrome requires a 192×192 and a 512×512 PNG icon for install eligibility. The
+manifest offers an SVG plus one 180×180 PNG that 404s. <strong>The site is
+therefore not installable</strong>, despite declaring <code>display: standalone</code>.
+Also absent: any <code>purpose: "maskable"</code> icon (Android will letterbox the
+icon inside a white circle), <code>screenshots</code> (which unlock Chrome's richer
+install dialog), and the <code>id</code>, <code>scope</code> and
+<code>orientation</code> fields.</p>
+
+<h3>Mobile experience — strong independent of PWA status</h3>
+<ul class="tight">
+<li>Viewport correctly declared with no <code>maximum-scale</code>, so pinch-zoom
+is not disabled — a common and serious accessibility error that this site avoids.</li>
+<li><code>theme-color</code> declared per colour scheme, so the browser chrome
+matches the active theme.</li>
+<li>The mobile navigation disclosure exists specifically because the links were
+previously hidden below <code>md</code> with no replacement — documented in the
+component's own comment as a fix.</li>
+<li>Layout is responsive throughout; the search form reflows from row to column,
+and the results grid collapses predictably.</li>
+<li>No service worker, so no offline capability. Defensible for a
+network-dependent lookup, but it means "PWA" is aspirational rather than actual.</li>
+</ul>
+</div>
+
+<!-- ═══════════════ 16 MONETIZATION ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">16</span>Monetization Readiness &nbsp;<span class="gD" style="font-size:14pt">C&minus;</span></h2>
+
+<h3>What is built</h3>
+<p>The affiliate infrastructure is real: 11 SKUs each carrying an
+<code>affiliate_url</code>, a redirect subdomain, correct
+<code>rel="sponsored noopener noreferrer"</code>, "Verified Partner" labelling,
+and a disclosure regime that is better than most public companies manage. The
+ranking model is defensible and is itself a trust asset — eligibility is decided
+purely by certification (<code>D ⊆ ⋃ N<sub>c</sub></code>) and commercial factors
+only reorder already-qualified results.</p>
+
+<h3>Why it cannot earn</h3>
+<div class="callout crit"><span class="t">The revenue surface is inert outside three cities</span>
+Filter recommendations render only when the engine finds detections exceeding a
+health goal. Detections exist only for the three bundled systems. Therefore the
+affiliate module — the site's only revenue mechanism — appears for
+approximately <strong>0.1% of US addresses</strong>. Fixing coverage (§08) is not
+a growth initiative; it is the precondition for any revenue at all.</div>
+
+<table>
+<tr><th style="width:44mm">Channel</th><th style="width:22mm">Status</th><th>Blocking item</th></tr>
+<tr><td>Hardware affiliate</td><td><span class="pill p-high">Built, inert</span></td><td>Coverage (§08). Also: redirect domain is <code>affil.waterqualitylens.com</code>.</td></tr>
+<tr><td>Lab-test affiliate (Tap Score)</td><td><span class="pill p-high">Referenced only</span></td><td>Named in two disclaimers and the README, but there is no link or CTA anywhere in the UI.</td></tr>
+<tr><td>Display advertising (AdSense)</td><td><span class="pill p-crit">Blocked</span></td><td>No privacy policy, no contact page. Would be rejected on submission.</td></tr>
+<tr><td>Email capture</td><td><span class="pill p-crit">None</span></td><td>No form anywhere. The Worker implements alerts; the web UI exposes none of it.</td></tr>
+<tr><td>Premium subscription</td><td><span class="pill p-med">Backend only</span></td><td>Vault endpoints exist in the undeployed Worker; no UI, no pricing, no checkout.</td></tr>
+</table>
+
+<h3>The highest-value unexploited asset</h3>
+<p>The Tap Score lab-test path is the most valuable and least developed
+opportunity on the site. The product's own disclaimers say — correctly and
+repeatedly — that system-level data cannot detect contamination from household
+plumbing, and that a point-of-use lab test is the only way to see it. That is a
+genuine, honestly-argued need, stated at the exact moment the user feels it, with
+no call to action attached. Lab-test referrals also carry materially higher
+commissions than filter hardware and, unlike hardware, they are relevant
+<strong>for every address including those with clean or absent data</strong> —
+which means this is the one revenue path that works <em>despite</em> the coverage
+gap rather than being blocked by it.</p>
+</div>
+
+<!-- ═══════════════ 17 STRENGTHS ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">17</span>Strengths to Preserve</h2>
+
+<p class="lede">These are load-bearing. Any refactor, redesign, or monetization
+push should be checked against this list before it ships.</p>
+
+<h3>1. The zero-third-party architecture</h3>
+<p>No analytics, no tag manager, no ad script, no font CDN. This single decision
+delivers the 87.1&nbsp;kB bundle, makes the strict CSP enforceable, and gives the
+privacy story its integrity. It is also the easiest thing to lose — the first
+analytics snippet costs all three at once. If measurement becomes necessary,
+require a self-hosted, cookieless, same-origin solution.</p>
+
+<h3>2. Honest uncertainty</h3>
+<p>The three-tier confidence model, the Tier-3 warning banner, the plumbing
+disclaimer, and the refusal to show partial filter matches all cost conversions
+and buy credibility. In a category defined by fear-based marketing, this is the
+brand. Protect it explicitly in any commercial review.</p>
+
+<h3>3. The certification-integrity engine</h3>
+<p>Isolating NSF 42/372 from health claims, ignoring retired P473, and eliminating
+partial matches programmatically rather than by editorial judgement is a genuine
+technical moat. The <code>/registry</code> page that names deceptive SKUs turns
+that engine into content.</p>
+
+<h3>4. Accessibility as a default</h3>
+<p>The no-JS fallback, the reduced-motion floor, the contextual focus ring, the
+SC 2.4.11 scroll margin. These were designed in, and the reasoning is preserved in
+code comments so a future contributor cannot remove them by accident.</p>
+
+<h3>5. Disclosure quality</h3>
+<p>The FTC affiliate language is specific, prominent, and repeated at the point of
+commercial contact. It is better than the legal minimum and should be carried
+verbatim into the formal policy documents rather than rewritten.</p>
+
+<h3>6. The print stylesheet</h3>
+<p>A water report that survives Ctrl-P — chrome stripped, evidence kept, link
+targets expanded — because the intended use is to take it to a landlord or a
+council meeting. This is product empathy expressed in CSS, and it is a genuine
+differentiator worth marketing.</p>
+</div>
+
+<!-- ═══════════════ 18 PORTFOLIO ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">18</span>Portfolio Context</h2>
+
+<p class="lede">Assessed as a member of the niche-utility collection alongside
+Launch-Window.net and the recipes, sports-analytics and health-tools verticals.</p>
+
+<h3>Where it fits</h3>
+<p>taptoglass.com is the most <strong>commercially ambitious</strong> and the most
+<strong>operationally demanding</strong> property in the portfolio, and those two
+facts are connected.</p>
+
+<table>
+<tr><th style="width:40mm">Portfolio trait</th><th style="width:26mm">Conformance</th><th>Notes</th></tr>
+<tr><td>Privacy-first, no tracking</td><td><span class="pill p-ok">Exemplary</span></td><td>Cleanest implementation in the portfolio. Should be the reference.</td></tr>
+<tr><td>Lightweight, fast, static-first</td><td><span class="pill p-ok">Exemplary</span></td><td>87.1 kB shared JS, 47 prerendered routes.</td></tr>
+<tr><td>Single-purpose utility</td><td><span class="pill p-ok">Strong</span></td><td>One job, clearly framed; no feature sprawl.</td></tr>
+<tr><td>Deterministic, no per-query LLM</td><td><span class="pill p-ok">Strong</span></td><td>Pure set-cover and point-in-polygon. Zero inference cost.</td></tr>
+<tr><td>Low operational burden</td><td><span class="pill p-crit">Divergent</span></td><td><strong>The exception.</strong> See below.</td></tr>
+<tr><td>Affiliate monetization</td><td><span class="pill p-med">Highest potential</span></td><td>Water filtration has far better economics than launch tracking.</td></tr>
+</table>
+
+<h3>The divergence that matters</h3>
+<div class="callout warn"><span class="t">This site does not share the portfolio's maintenance profile</span>
+Launch-Window.net consumes a public launch API and is essentially
+self-maintaining. taptoglass.com requires a <strong>weekly SDWIS ingestion
+pipeline</strong>, <strong>quarterly manual re-verification of NSF certifications</strong>
+(the README correctly identifies this as unavoidable — there is no bulk
+certification API), and <strong>ongoing affiliate-link maintenance</strong>. The
+certification table is simultaneously the moat and the recurring cost. Budget it
+as a standing quarterly obligation, not a one-time build.</div>
+
+<h3>Cross-portfolio leverage</h3>
+<ul class="tight">
+<li><strong>Export the design system.</strong> The token architecture, three-state
+dark mode, focus-ring treatment and print stylesheet are portable. Extracting them
+into a shared package would lift the whole portfolio and amortise this build.</li>
+<li><strong>Reuse the disclosure kit.</strong> Once a real privacy policy, terms and
+contact page exist here, they become templates for every affiliate property in the
+collection — including the recipe verticals, which face the same FTC requirements.</li>
+<li><strong>Adopt the confidence-tier pattern.</strong> Any portfolio tool that
+resolves uncertain inputs — sports projections especially — benefits from the same
+"show the seam" treatment.</li>
+<li><strong>Shared health cluster.</strong> This site and the health-tools vertical
+can interlink credibly on water, hydration and household-exposure topics, building
+topical authority across two properties rather than one.</li>
+</ul>
+
+<h3>Competitive landscape</h3>
+<p>The niche has three incumbent shapes, and the gap between them is real:</p>
+<ul class="tight">
+<li><strong>EWG Tap Water Database</strong> — dominant authority, enormous coverage,
+strong domain. Its weakness is that it compares against EWG's own health
+guidelines rather than federal limits, which reads as advocacy; it is also dated
+in presentation and offers no certification-matched hardware path.</li>
+<li><strong>Utility CCR portals and state dashboards</strong> — authoritative and
+free, but PDF-first, address-hostile, and unusable by a non-specialist.</li>
+<li><strong>Filter-vendor "water quality checkers"</strong> — fast and well-designed,
+but owned by manufacturers, so every result routes to the sponsor's own hardware.
+This is precisely the pattern the <code>/registry</code> page documents.</li>
+</ul>
+<p>The defensible position is the one the site already claims: <strong>federal
+limits rather than proprietary guidelines, vendor-agnostic hardware matching, and
+certification transparency including naming SKUs that overstate their standards.</strong>
+No incumbent occupies that intersection. It is a real opening — but it requires
+national coverage to contest, because EWG's advantage is breadth and the current
+answer to "does it cover me?" is almost always no.</p>
+</div>
+
+<!-- ═══════════════ 19 CLOSING ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">19</span>Verdict &amp; Recommended Sequence</h2>
+
+<h3>Verdict</h3>
+<p>taptoglass.com is a well-built product that has not yet been finished. The
+distance between its engineering quality and its launch readiness is unusually
+large, and unusually <em>cheap to close</em> — the gap is configuration, legal
+copy, one manifest string, and a data connection, not architecture. Nothing in
+this audit recommends a rewrite of anything.</p>
+
+<p>The governing risk is not any single defect but a specific compound failure:
+a site that <strong>appears</strong> polished and authoritative, tells a user in
+Denver that nothing was detected in their water, and offers no contact
+information, no privacy policy, and a canonical tag pointing at a different
+domain. Each of those is individually fixable in hours. Together, and left
+unaddressed, they would make the site's own trust-first positioning
+counterfactual.</p>
+
+<h3>Recommended sequence</h3>
+<ol class="tight">
+<li><strong>Verify the production origin first.</strong> Confirm
+<code>NEXT_PUBLIC_SITE_URL</code> is set to <code>https://taptoglass.com</code>.
+Nothing else in SEO matters until this is known. <em>(Minutes.)</em></li>
+<li><strong>Resolve the brand decision.</strong> Either rename the product to Tap
+to Glass throughout, or move the site to waterqualitylens.com. The current state —
+one name in the code, another in the address bar — is the worst of both.
+<em>(Hours, once decided.)</em></li>
+<li><strong>Ship the legal and contact layer.</strong> Privacy policy, terms,
+contact page. This unblocks AdSense, affiliate programmes, and the YMYL trust
+signal simultaneously. <em>(One day.)</em></li>
+<li><strong>Connect real data.</strong> Deploy the Worker, populate the D1
+bindings, run the SDWIS ingestion. This is the item that converts every other
+improvement into revenue. <em>(The real project.)</em></li>
+<li><strong>Then</strong> pursue content, schema and monetization expansion.</li>
+</ol>
+
+<div class="callout good"><span class="t">A closing note on what this team built</span>
+It is worth stating plainly that the front-end craft here — the token system, the
+accessibility reasoning preserved in comments, the no-JS fallback, the print
+stylesheet, the refusal to show partial matches — is materially better than what
+this audit typically finds in funded consumer properties. The findings in this
+report are about what was not yet connected, not about what was built badly.</div>
+
+<hr class="soft">
+<p class="small muted">Document 1 of 2 · taptoglass.com full audit · 29 August 2026 ·
+Evidence base: kevynsgrin-a11y/WaterLens @ 79424b3, production build executed
+locally. Live-origin verification pending (see §00). Continued in Document 2 —
+Numbered Issues, Verbatim Fixes &amp; 30-Day Plan.</p>
+</div>
+
+</body></html>

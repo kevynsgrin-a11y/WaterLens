@@ -23,28 +23,28 @@ type TierRow = {
 
 const toneStyles: Record<
   TierTone,
-  { rail: string; chip: string; value: string; iconWrap: string; dot: string }
+  { rail: string; value: string; iconWrap: string; dot: string }
 > = {
   verdant: {
     rail: "before:bg-verdant-400",
-    chip: "bg-verdant-50 text-verdant-700 border-verdant-200",
-    value: "text-verdant-700",
-    iconWrap: "bg-verdant-50 text-verdant-600",
-    dot: "bg-verdant-500",
+    value: "text-verdant-700 dark:text-verdant-200",
+    iconWrap: "bg-verdant-50 text-verdant-600 dark:bg-verdant-300/10 dark:text-verdant-200",
+    dot: "bg-verdant-500 dark:bg-verdant-300",
   },
   brand: {
     rail: "before:bg-brand-400",
-    chip: "bg-brand-50 text-brand-700 border-brand-200",
-    value: "text-brand-700",
-    iconWrap: "bg-brand-50 text-brand-600",
-    dot: "bg-brand-500",
+    value: "text-brand-700 dark:text-brand-200",
+    iconWrap: "bg-brand-50 text-brand-600 dark:bg-brand-300/10 dark:text-brand-200",
+    dot: "bg-brand-500 dark:bg-brand-300",
   },
+  // Amber is legitimate here and ONLY here: this card explains the Tier-3
+  // mapping-ambiguity banner. The signal is additionally carried by the left
+  // rule and the dashed-radius glyph, never by hue alone (DESIGN.md).
   caution: {
     rail: "before:bg-caution-400",
-    chip: "bg-caution-50 text-caution-800 border-caution-200",
-    value: "text-caution-700",
-    iconWrap: "bg-caution-50 text-caution-700",
-    dot: "bg-caution-500",
+    value: "text-caution-700 dark:text-caution-200",
+    iconWrap: "bg-caution-50 text-caution-700 dark:bg-caution-300/10 dark:text-caution-200",
+    dot: "bg-caution-500 dark:bg-caution-300",
   },
 };
 
@@ -135,7 +135,8 @@ export function TierExplainer({ className }: { className?: string }) {
           <li
             key={row.tier}
             className={cx(
-              "relative flex flex-col overflow-hidden rounded-2xl border border-ink-100 bg-white p-6 shadow-card",
+              "relative flex flex-col overflow-hidden rounded-2xl bg-surface-raised p-6 shadow-card",
+              "ring-1 ring-ink-900/[0.055] dark:ring-white/10",
               "before:absolute before:inset-y-0 before:left-0 before:w-1",
               s.rail
             )}
@@ -150,12 +151,12 @@ export function TierExplainer({ className }: { className?: string }) {
               >
                 {row.icon}
               </span>
-              <span className="font-mono text-sm font-semibold text-ink-300">
+              <span className="font-mono text-sm font-semibold text-ink-500 dark:text-ink-400">
                 Tier {i + 1}
               </span>
             </div>
 
-            <h3 className="mt-5 text-lg font-semibold text-ink-900">
+            <h3 className="mt-5 text-title-2 text-ink-900 dark:text-white">
               {TIER_LABEL[row.tier]}
             </h3>
 
@@ -165,16 +166,16 @@ export function TierExplainer({ className }: { className?: string }) {
               >
                 {formatConfidence(row.tier)}
               </span>
-              <span className="text-xs font-medium uppercase tracking-wide text-ink-400">
+              <span className="text-xs font-medium uppercase tracking-wide text-ink-500 dark:text-ink-400">
                 confidence
               </span>
             </div>
 
-            <p className="mt-4 text-sm leading-relaxed text-ink-600">
+            <p className="mt-4 text-sm leading-relaxed text-ink-600 dark:text-ink-300">
               {row.meaning}
             </p>
 
-            <div className="mt-5 flex items-start gap-2.5 border-t border-ink-100 pt-4">
+            <div className="mt-5 flex items-start gap-2.5 border-t border-hairline pt-4">
               <span
                 className={cx(
                   "mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full",
@@ -182,8 +183,10 @@ export function TierExplainer({ className }: { className?: string }) {
                 )}
                 aria-hidden="true"
               />
-              <p className="text-sm leading-relaxed text-ink-500">
-                <span className="font-medium text-ink-700">In the report: </span>
+              <p className="text-sm leading-relaxed text-ink-500 dark:text-ink-400">
+                <span className="font-medium text-ink-700 dark:text-ink-200">
+                  In the report:{" "}
+                </span>
                 {row.consequence}
               </p>
             </div>

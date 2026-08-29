@@ -1,4 +1,5 @@
-import { Container, Section, Card, Eyebrow, Badge } from "@/components/ui";
+import { Container, Section, Card, Badge, IconTile, SectionHeading } from "@/components/ui";
+import { Reveal } from "@/components/Reveal";
 import type { ReactNode } from "react";
 
 function PinIcon() {
@@ -87,46 +88,39 @@ const STEPS: Step[] = [
 
 export function HowItWorks() {
   return (
-    <Section id="how-it-works" className="bg-ink-50">
+    <Section id="how-it-works" tone="sunken">
       <Container>
-        <div className="max-w-2xl">
-          <Eyebrow>How it works</Eyebrow>
-          <h2 className="text-2xl font-semibold tracking-tight text-ink-900 sm:text-3xl">
-            From an address to a verified answer in three steps
-          </h2>
-          <p className="mt-4 text-base leading-relaxed text-ink-600">
-            The same deterministic pipeline runs for every address: identify the
-            system, read the record, match the hardware. No account, no upsell in
-            the way of the data.
-          </p>
-        </div>
+        <Reveal>
+          <SectionHeading
+            eyebrow="How it works"
+            title="From an address to a verified answer in three steps"
+            lede="The same deterministic pipeline runs for every address: identify the system, read the record, match the hardware. No account, no upsell in the way of the data."
+          />
+        </Reveal>
 
-        <ol className="mt-12 grid gap-6 md:grid-cols-3">
-          {STEPS.map((step) => (
-            <Card as="li" key={step.n} className="flex flex-col p-7">
-              <div className="flex items-center justify-between">
-                <span
-                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600"
-                  aria-hidden="true"
-                >
-                  {step.icon}
-                </span>
-                <span className="font-mono text-sm font-semibold text-ink-300">
-                  {step.n}
-                </span>
-              </div>
-              <h3 className="mt-5 text-lg font-semibold text-ink-900">
-                {step.title}
-              </h3>
-              <p className="mt-3 flex-1 text-sm leading-relaxed text-ink-600">
-                {step.body}
-              </p>
-              <div className="mt-5">
-                <Badge tone="brand">{step.tag}</Badge>
-              </div>
-            </Card>
-          ))}
-        </ol>
+        <Reveal delay={80}>
+          <ol className="mt-12 grid gap-6 md:grid-cols-3">
+            {STEPS.map((step) => (
+              <Card as="li" key={step.n} className="flex flex-col p-7">
+                <div className="flex items-center justify-between">
+                  <IconTile>{step.icon}</IconTile>
+                  <span className="font-mono text-sm font-semibold text-ink-500 dark:text-ink-400">
+                    {step.n}
+                  </span>
+                </div>
+                <h3 className="mt-5 text-title-2 text-ink-900 dark:text-white">
+                  {step.title}
+                </h3>
+                <p className="mt-3 flex-1 text-sm leading-relaxed text-ink-600 dark:text-ink-300">
+                  {step.body}
+                </p>
+                <div className="mt-5">
+                  <Badge tone="brand">{step.tag}</Badge>
+                </div>
+              </Card>
+            ))}
+          </ol>
+        </Reveal>
       </Container>
     </Section>
   );
