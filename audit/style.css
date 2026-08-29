@@ -1,0 +1,117 @@
+/* ── Fortune-500 audit report stylesheet ───────────────────────────────── */
+@page { size: Letter; margin: 18mm 16mm 20mm 16mm; }
+@page :first { margin: 0; }
+
+:root{
+  --navy:#112232; --brand:#1b3e59; --brand-mid:#2b76a6; --brand-lt:#7cb6d8;
+  --verd:#276a51; --verd-lt:#4fa17f; --amber:#bd7817; --amber-lt:#e8b13c;
+  --red:#8f2f2f; --ink:#2b3038; --ink-mid:#4c5766; --ink-lt:#77839a;
+  --rule:#d5dae1; --bg-soft:#f6f7f9; --bg-tint:#eef6fb;
+}
+*{box-sizing:border-box;}
+body{
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size:9.6pt; line-height:1.52; color:var(--ink); margin:0;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact;
+}
+h1,h2,h3,h4{color:var(--navy); margin:0; font-weight:700; letter-spacing:-.012em;}
+p{margin:0 0 .62em;}
+a{color:var(--brand-mid); text-decoration:none;}
+code,.mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  font-size:8.4pt; background:var(--bg-soft); padding:.08em .32em; border-radius:3px;
+  border:1px solid var(--rule); word-break:break-word;}
+
+/* ── Cover ─────────────────────────────────────────────────────────────── */
+.cover{
+  height:268mm; width:100%; padding:24mm 22mm 12mm;
+  background:linear-gradient(155deg,#0d1720 0%,#112232 42%,#1c4a6b 100%);
+  color:#fff; position:relative; page-break-after:always; overflow:hidden;
+}
+.cover::before{
+  content:""; position:absolute; inset:0;
+  background-image:linear-gradient(to right,rgba(255,255,255,.055) 1px,transparent 1px),
+                   linear-gradient(to bottom,rgba(255,255,255,.055) 1px,transparent 1px);
+  background-size:44px 44px;
+}
+.cover-inner{position:relative;}
+.cover-spacer{display:none;}
+.cover .eyebrow{font-size:8.2pt;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--brand-lt);font-weight:700;}
+.cover h1{font-size:35pt;line-height:1.04;color:#fff;margin:14mm 0 0;letter-spacing:-.028em;}
+.cover .domain{font-size:16pt;color:var(--brand-lt);margin-top:5mm;font-weight:600;
+  font-family:"SFMono-Regular",Consolas,monospace;}
+.cover .sub{font-size:11pt;color:#c9dced;margin-top:9mm;max-width:130mm;line-height:1.6;}
+.cover .meta{position:absolute;left:22mm;right:22mm;bottom:16mm;
+  border-top:1px solid rgba(255,255,255,.2);padding-top:5mm;
+  display:flex;justify-content:space-between;font-size:8.6pt;color:#a9c4da;}
+.gradebox{
+  margin-top:16mm;display:inline-flex;align-items:stretch;
+  border:1px solid rgba(255,255,255,.26);border-radius:10px;overflow:hidden;
+  background:rgba(255,255,255,.06);
+}
+.gradebox .g{padding:7mm 11mm;text-align:center;border-right:1px solid rgba(255,255,255,.18);}
+.gradebox .g:last-child{border-right:0;}
+.gradebox .val{font-size:31pt;font-weight:700;line-height:1;color:#fff;}
+.gradebox .lbl{font-size:7.4pt;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--brand-lt);margin-top:3mm;font-weight:600;}
+
+/* ── Structure ─────────────────────────────────────────────────────────── */
+.section{page-break-before:always;}
+h2.sec{font-size:16.5pt;padding-bottom:2.6mm;border-bottom:2.5px solid var(--brand);
+  margin-bottom:5mm;}
+h2.sec .num{color:var(--brand-lt);font-family:"SFMono-Regular",Consolas,monospace;
+  font-size:12pt;margin-right:3mm;}
+h3{font-size:11.4pt;margin:6mm 0 2.2mm;}
+h4{font-size:9.8pt;margin:4mm 0 1.4mm;color:var(--brand);}
+.lede{font-size:10.4pt;color:var(--ink-mid);line-height:1.62;margin-bottom:4mm;}
+
+/* ── Tables ────────────────────────────────────────────────────────────── */
+table{width:100%;border-collapse:collapse;margin:3.4mm 0 5mm;font-size:8.9pt;}
+th{background:var(--navy);color:#fff;text-align:left;padding:2.4mm 2.6mm;
+  font-size:7.8pt;letter-spacing:.09em;text-transform:uppercase;font-weight:700;}
+td{padding:2.3mm 2.6mm;border-bottom:1px solid var(--rule);vertical-align:top;}
+tr:nth-child(even) td{background:#fafbfc;}
+table.grades td:nth-child(2){text-align:center;width:19mm;font-weight:700;font-size:11pt;}
+table.grades td:nth-child(3){width:24mm;text-align:center;}
+.trend{font-size:7.6pt;font-weight:700;letter-spacing:.05em;text-transform:uppercase;}
+
+/* ── Grade pills ───────────────────────────────────────────────────────── */
+.gA{color:#1d6b4c;} .gB{color:#1f5c86;} .gC{color:#9a6410;}
+.gD{color:#8f2f2f;} .gF{color:#7a1f1f;} .gN{color:var(--ink-lt);font-size:8pt !important;}
+.pill{display:inline-block;padding:.16em .62em;border-radius:99px;font-size:7.4pt;
+  font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:1px solid;}
+.p-crit{color:#8f2f2f;border-color:#e0b4b4;background:#fdf1f1;}
+.p-high{color:#9a6410;border-color:#f0d9a8;background:#fdf8ec;}
+.p-med{color:#1f5c86;border-color:#bcd9ea;background:#eef6fb;}
+.p-low{color:#4c5766;border-color:var(--rule);background:var(--bg-soft);}
+.p-ok{color:#1d6b4c;border-color:#aedcc4;background:#eff8f4;}
+
+/* ── Callouts ──────────────────────────────────────────────────────────── */
+.callout{border-left:3.5px solid var(--brand-mid);background:var(--bg-tint);
+  padding:3.4mm 4mm;margin:3.6mm 0;border-radius:0 5px 5px 0;page-break-inside:avoid;}
+.callout.warn{border-left-color:var(--amber-lt);background:#fdf8ec;}
+.callout.crit{border-left-color:#c66;background:#fdf1f1;}
+.callout.good{border-left-color:var(--verd-lt);background:#eff8f4;}
+.callout .t{font-weight:700;color:var(--navy);font-size:9.2pt;margin-bottom:1.2mm;
+  display:block;letter-spacing:-.01em;}
+.evidence{background:var(--navy);color:#dbe7f0;padding:3mm 3.6mm;border-radius:5px;
+  font-family:"SFMono-Regular",Consolas,monospace;font-size:7.9pt;line-height:1.5;
+  margin:2.6mm 0 3.6mm;white-space:pre-wrap;page-break-inside:avoid;}
+.evidence .k{color:var(--brand-lt);}
+.evidence .hd{color:#8fb8d4;font-size:7pt;letter-spacing:.14em;text-transform:uppercase;
+  display:block;margin-bottom:1.6mm;font-family:Helvetica,Arial,sans-serif;font-weight:700;}
+
+ul,ol{margin:.3em 0 .8em;padding-left:4.6mm;}
+li{margin-bottom:.34em;}
+.tight li{margin-bottom:.16em;}
+.avoid{page-break-inside:avoid;}
+.muted{color:var(--ink-lt);}
+.small{font-size:8.4pt;}
+hr.soft{border:0;border-top:1px solid var(--rule);margin:5mm 0;}
+.two-col{column-count:2;column-gap:7mm;}
+.kv{display:grid;grid-template-columns:34mm 1fr;gap:1.1mm 3mm;font-size:8.9pt;margin:2.6mm 0 4mm;}
+.kv dt{font-weight:700;color:var(--brand);}
+.kv dd{margin:0;color:var(--ink-mid);}
+.scorebar{height:5px;background:var(--rule);border-radius:99px;overflow:hidden;
+  margin-top:1.6mm;width:100%;}
+.scorebar i{display:block;height:100%;border-radius:99px;}

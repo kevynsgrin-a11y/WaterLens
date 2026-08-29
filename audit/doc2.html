@@ -1,0 +1,1326 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>taptoglass.com — Issues, Fixes &amp; 30-Day Plan</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.issue{page-break-inside:avoid;margin:0 0 6mm;border:1px solid var(--rule);
+  border-radius:7px;overflow:hidden;}
+.issue-hd{background:var(--bg-soft);border-bottom:1px solid var(--rule);
+  padding:2.6mm 3.4mm;display:flex;align-items:baseline;gap:3mm;}
+.issue-hd .n{font-family:"SFMono-Regular",Consolas,monospace;font-weight:700;
+  color:var(--brand-mid);font-size:10.5pt;}
+.issue-hd .ti{font-weight:700;color:var(--navy);font-size:10pt;flex:1;letter-spacing:-.012em;}
+.issue-bd{padding:3.2mm 3.4mm;}
+.issue-bd .meta-row{font-size:7.8pt;color:var(--ink-lt);margin-bottom:2.2mm;
+  display:flex;gap:4mm;flex-wrap:wrap;}
+.issue-bd .meta-row b{color:var(--ink-mid);font-weight:700;}
+.fixlabel{font-size:7.4pt;letter-spacing:.15em;text-transform:uppercase;font-weight:700;
+  color:var(--verd);margin:3mm 0 1.4mm;display:block;}
+pre.fix{background:#0f2231;color:#dbe7f0;padding:3mm 3.4mm;border-radius:5px;
+  font-family:"SFMono-Regular",Consolas,monospace;font-size:7.7pt;line-height:1.48;
+  margin:0 0 1mm;white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere;}
+pre.fix .c{color:#7fa8c4;}
+pre.fix .a{color:#8ed3a8;}
+pre.fix .d{color:#e59a9a;}
+blockquote.copy{background:#fff;border:1px solid var(--rule);border-left:3px solid var(--verd-lt);
+  padding:3mm 3.6mm;margin:0 0 1mm;border-radius:0 5px 5px 0;font-size:8.7pt;line-height:1.55;}
+blockquote.copy p{margin:0 0 .5em;} blockquote.copy p:last-child{margin:0;}
+blockquote.copy h5{margin:0 0 1.2mm;font-size:9pt;color:var(--navy);}
+.week{border-left:3px solid var(--brand-mid);padding-left:4mm;margin:0 0 6mm;page-break-inside:avoid;}
+.week h3{margin-top:0;}
+.week .goal{font-size:8.6pt;color:var(--ink-mid);font-style:italic;margin-bottom:2.4mm;}
+.daychip{display:inline-block;background:var(--navy);color:#fff;font-size:7.2pt;
+  font-weight:700;padding:.2em .6em;border-radius:4px;margin-right:2mm;
+  font-family:"SFMono-Regular",Consolas,monospace;}
+</style></head><body>
+
+<!-- ═══════════════ COVER ═══════════════ -->
+<div class="cover"><div class="cover-inner">
+  <div class="eyebrow">Remediation &amp; Growth Plan</div>
+  <h1>Issues, Fixes<br>&amp; 30-Day Plan</h1>
+  <div class="domain">taptoglass.com</div>
+  <p class="sub">Every material finding, numbered and prioritised, each paired with
+  a ready-to-implement fix — exact configuration values, verbatim policy copy, and
+  drop-in code. Followed by a day-by-day 30-day plan that builds topical authority
+  without compromising the property's privacy-first, lightweight character.</p>
+
+  <div class="gradebox">
+    <div class="g"><div class="val">31</div><div class="lbl">Issues Logged</div></div>
+    <div class="g"><div class="val">6</div><div class="lbl">Critical</div></div>
+    <div class="g"><div class="val">14</div><div class="lbl">Quick Wins</div></div>
+  </div>
+</div>
+  <div class="meta">
+    <span>Audit date: 29 August 2026</span>
+    <span>Companion to Document 1</span>
+    <span>Document 2 of 2</span>
+  </div>
+</div>
+
+<!-- ═══════════════ HOW TO USE ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">A</span>How to Use This Document</h2>
+
+<p class="lede">Issues are numbered 1–31 and ordered by severity, then by
+implementation cost. Numbering is stable — cite it in tickets and commits.</p>
+
+<table>
+<tr><th style="width:26mm">Label</th><th>Meaning</th></tr>
+<tr><td><span class="pill p-crit">Critical</span></td><td>Blocks launch, revenue, or indexing; or creates legal exposure. Fix before promoting the site.</td></tr>
+<tr><td><span class="pill p-high">High</span></td><td>Materially degrades trust, discoverability, or conversion. Fix within 30 days.</td></tr>
+<tr><td><span class="pill p-med">Medium</span></td><td>Real defect with bounded impact. Schedule deliberately.</td></tr>
+<tr><td><span class="pill p-low">Low</span></td><td>Polish. Batch opportunistically.</td></tr>
+<tr><td><span class="pill p-ok">Quick win</span></td><td>Under ~60 minutes, low risk, no dependencies.</td></tr>
+</table>
+
+<div class="callout warn"><span class="t">Two issues must be verified against the live origin before fixing</span>
+Issues <strong>1</strong> and <strong>13</strong> concern values that this audit
+could measure only in a local build (no egress — see Document 1 §00). Confirm the
+live behaviour first; if already correct, close them and note the verification date.</div>
+
+<h3>Severity distribution</h3>
+<table>
+<tr><th>Severity</th><th style="width:20mm">Count</th><th>Issue numbers</th></tr>
+<tr><td><span class="pill p-crit">Critical</span></td><td>6</td><td>1, 2, 3, 4, 5, 6</td></tr>
+<tr><td><span class="pill p-high">High</span></td><td>9</td><td>7–15</td></tr>
+<tr><td><span class="pill p-med">Medium</span></td><td>10</td><td>16–25</td></tr>
+<tr><td><span class="pill p-low">Low</span></td><td>6</td><td>26–31</td></tr>
+</table>
+</div>
+
+<!-- ═══════════════ CRITICAL ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">B</span>Critical Issues (1–6)</h2>
+
+<!-- 1 -->
+<div class="issue">
+<div class="issue-hd"><span class="n">01</span><span class="ti">Canonical origin defaults to the wrong domain</span>
+<span class="pill p-crit">Critical</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>File:</b> web/lib/site.ts</span><span><b>Effort:</b> 5 min</span>
+<span><b>Impact:</b> Total loss of indexing attribution</span><span class="pill p-ok">Quick win</span></div>
+<p><code>SITE_URL</code> falls back to <code>https://waterqualitylens.com</code>.
+No <code>.env</code>, CI workflow, or deploy config in the repository sets
+<code>NEXT_PUBLIC_SITE_URL</code>. If it is unset in production, every canonical
+tag, <code>og:url</code>, sitemap entry, JSON-LD <code>@id</code>, and the
+<code>robots.txt</code> <code>Host</code>/<code>Sitemap</code> directives will name
+a different domain — telling Google the real content lives elsewhere.</p>
+
+<span class="fixlabel">Step 1 — Verify live (do this first)</span>
+<pre class="fix">curl -s https://taptoglass.com/robots.txt
+<span class="c"># Must print Host: https://taptoglass.com — NOT waterqualitylens.com</span>
+
+curl -s https://taptoglass.com/ | grep -o '&lt;link rel="canonical"[^&gt;]*&gt;'
+<span class="c"># Must print href="https://taptoglass.com"</span></pre>
+
+<span class="fixlabel">Step 2 — Set the environment variable in the host</span>
+<pre class="fix"><span class="c"># Vercel / Netlify / Cloudflare Pages → Environment Variables (all environments)</span>
+NEXT_PUBLIC_SITE_URL=https://taptoglass.com</pre>
+
+<span class="fixlabel">Step 3 — Make the default safe (verbatim replacement)</span>
+<pre class="fix"><span class="c">// web/lib/site.ts — replace the whole file</span>
+
+<span class="c">/**
+ * Single source of truth for the canonical origin. The production domain is the
+ * default so a missing env var degrades to correct behaviour rather than
+ * silently publishing another domain's canonicals.
+ */</span>
+export const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL ?? <span class="a">"https://taptoglass.com"</span>
+).replace(/\/$/, "");
+
+export const SITE_NAME = <span class="a">"Tap to Glass"</span>;</pre>
+</div></div>
+
+<!-- 2 -->
+<div class="issue">
+<div class="issue-hd"><span class="n">02</span><span class="ti">No privacy policy, terms, or contact method</span>
+<span class="pill p-crit">Critical</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>Files:</b> new /privacy, /terms, /contact</span><span><b>Effort:</b> 1 day</span>
+<span><b>Impact:</b> Blocks AdSense &amp; affiliate programmes; YMYL E-E-A-T penalty</span></div>
+<p><code>/legal</code> is a self-described summary that "does not replace formal
+terms." No contact address exists anywhere in the repository. For health-adjacent
+YMYL content, identifiable ownership and contactability are core trust signals.</p>
+
+<span class="fixlabel">Verbatim privacy policy — ready to publish at /privacy</span>
+<blockquote class="copy">
+<h5>Privacy Policy</h5>
+<p><strong>Last updated: [DATE]</strong></p>
+<p>Tap to Glass ("we", "us") operates taptoglass.com. This policy explains what
+we collect, what we do not, and who else sees your data. It is written to be
+read.</p>
+<p><strong>The short version.</strong> We have no advertising, no analytics, no
+tracking pixels, and no third-party scripts. We set no cookies. You do not need
+an account to use the lookup.</p>
+<p><strong>Information you provide.</strong> When you use the address lookup, you
+enter a street address or ZIP code and optionally a dwelling type. We use these
+only to identify your public water system and generate your report. We do not
+require your name, email address, or phone number, and we do not sell, rent, or
+share your address with advertisers or data brokers.</p>
+<p><strong>Third parties that receive your address.</strong> To resolve an
+address to a water system, we transmit what you enter to two United States
+government services: the <em>U.S. Census Bureau Geocoding Service</em>
+(geocoding.geo.census.gov), which converts the address to coordinates, and the
+<em>U.S. EPA Envirofacts</em> service (data.epa.gov), which returns public water
+system records. Both are federal government systems operating under their own
+published privacy practices. We send no other data to any third party.</p>
+<p><strong>Information collected automatically.</strong> Our hosting provider
+records standard server logs, which may include IP address, user agent, and
+requested URL, for security and reliability. These logs are retained for no more
+than 30 days and are not combined with lookup addresses to build a profile.</p>
+<p><strong>Storage on your device.</strong> We store a single item in your
+browser's local storage, named <code>theme</code>, holding the value "light" or
+"dark" so the site remembers your display preference. It contains no identifier,
+is never transmitted to us, and you can clear it at any time through your
+browser's site-data settings. We use no cookies.</p>
+<p><strong>Affiliate links.</strong> Some hardware and laboratory-test links are
+affiliate placements, marked "Verified Partner." If you follow one, the
+destination retailer or laboratory operates under its own privacy practices and
+may set its own cookies. We do not control and are not responsible for those
+practices.</p>
+<p><strong>Your rights.</strong> Because the core tool is anonymous, we typically
+hold no personal information tied to you. If you believe we hold information
+about you, you may request access, correction, or deletion by emailing
+<strong>[CONTACT EMAIL]</strong>. Residents of California (CCPA/CPRA) and the
+European Economic Area and United Kingdom (UK GDPR/GDPR) may exercise the rights
+available under those laws through the same address, and we will respond within
+the period the applicable law requires. We do not sell or share personal
+information as those terms are defined under the CPRA.</p>
+<p><strong>Children.</strong> This service is not directed to children under 13
+and we do not knowingly collect information from them.</p>
+<p><strong>Changes.</strong> Material changes will be reflected here with an
+updated date above.</p>
+<p><strong>Contact.</strong> [CONTACT EMAIL] · [LEGAL ENTITY NAME] · [MAILING
+ADDRESS]</p>
+</blockquote>
+
+<span class="fixlabel">Verbatim terms of service — ready to publish at /terms</span>
+<blockquote class="copy">
+<h5>Terms of Use</h5>
+<p><strong>Last updated: [DATE]</strong></p>
+<p><strong>What this service is.</strong> Tap to Glass is an informational tool
+that aggregates public municipal water data and independent product
+certifications. It is provided <strong>as is</strong> and <strong>as
+available</strong>, for general information only.</p>
+<p><strong>Not professional advice.</strong> Nothing on this site is medical,
+legal, engineering, or professional advice. We report engineering measurements
+and hardware certifications. We do not diagnose exposure, predict health
+outcomes, or recommend treatment. Consult a licensed professional for questions
+about your health.</p>
+<p><strong>Data accuracy.</strong> Contaminant and violation data originates from
+the U.S. EPA and state primacy agencies. Water system boundaries are derived from
+public and modeled datasets. We present this information faithfully but cannot
+guarantee it is current, complete, or free of errors in the source. Water quality
+changes between sampling events, and system-level data cannot describe
+contamination introduced by your own plumbing.</p>
+<p><strong>Verify before acting.</strong> Confirm the utility name on your water
+bill, particularly where we label a match "Modeled" or otherwise low-confidence,
+and obtain a certified laboratory test before making consequential decisions.</p>
+<p><strong>Affiliate relationships.</strong> We earn commissions on some hardware
+and laboratory-test links. Products qualify for display only by holding the
+relevant NSF/ANSI health certification for the contaminants detected; commercial
+arrangements never alter eligibility or ranking. See our Legal &amp; Disclosures
+page.</p>
+<p><strong>Acceptable use.</strong> Use the service for personal, non-commercial
+research. Do not scrape, bulk-download, or resell the data, and do not use
+automated systems to submit requests at a rate that degrades the service.</p>
+<p><strong>Limitation of liability.</strong> To the maximum extent permitted by
+law, Tap to Glass and its operators are not liable for any indirect, incidental,
+or consequential damages arising from use of this service or reliance on its
+data.</p>
+<p><strong>Governing law.</strong> These terms are governed by the laws of
+[STATE/JURISDICTION].</p>
+<p><strong>Contact.</strong> [CONTACT EMAIL]</p>
+</blockquote>
+
+<span class="fixlabel">Contact page — minimum viable content</span>
+<blockquote class="copy">
+<h5>Contact</h5>
+<p><strong>General enquiries and corrections:</strong> [CONTACT EMAIL]</p>
+<p><strong>Data corrections.</strong> If a water system record or filter
+certification on this site is wrong, tell us. Include the PWSID or SKU and the
+source you are citing, and we will verify it against the primary record and
+correct it.</p>
+<p><strong>Privacy requests:</strong> [CONTACT EMAIL]</p>
+<p><strong>Operated by:</strong> [LEGAL ENTITY NAME], [MAILING ADDRESS]</p>
+<p>We aim to respond within five business days.</p>
+</blockquote>
+
+<span class="fixlabel">Wire into the footer</span>
+<pre class="fix"><span class="c">// web/components/site/SiteFooter.tsx — in the "Company" group</span>
+{ href: "/methodology", label: "Methodology" },
+{ href: "/about",       label: "About" },
+<span class="a">{ href: "/contact",     label: "Contact" },</span>
+{ href: "/legal",       label: "Legal &amp; disclosures" },
+<span class="a">{ href: "/privacy",     label: "Privacy policy" },</span>
+<span class="a">{ href: "/terms",       label: "Terms of use" },</span></pre>
+<p class="small muted">Also add all three routes to <code>web/app/sitemap.ts</code>
+with <code>changeFrequency: "yearly", priority: 0.3</code>.</p>
+</div></div>
+
+<!-- 3 -->
+<div class="issue">
+<div class="issue-hd"><span class="n">03</span><span class="ti">Data coverage limited to three water systems</span>
+<span class="pill p-crit">Critical</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>Files:</b> web/lib/data.ts, src/ingest/sdwisIngest.ts, wrangler.toml</span>
+<span><b>Effort:</b> Multi-week</span><span><b>Impact:</b> Blocks all revenue</span></div>
+<p>The root commercial defect. <code>DEMO_SYSTEMS</code> contains three
+hand-written entries. Outside them the ZIP fallback returns
+<code>detections: []</code>, so <code>matchFilters()</code> returns an empty array
+and no hardware — therefore no affiliate revenue — is ever shown. See Document 1 §08.</p>
+
+<span class="fixlabel">Step 1 — Provision the Cloudflare bindings</span>
+<pre class="fix">wrangler d1 create waterlens
+wrangler kv namespace create CACHE
+wrangler queues create waterlens-alerts
+wrangler queues create waterlens-alerts-dlq
+
+<span class="c"># Paste the returned ids into wrangler.toml, replacing:</span>
+<span class="d">database_id = "REPLACE_WITH_D1_DATABASE_ID"</span>
+<span class="d">id          = "REPLACE_WITH_KV_NAMESPACE_ID"</span></pre>
+
+<span class="fixlabel">Step 2 — Migrate, seed, deploy, ingest</span>
+<pre class="fix">npm run db:migrate:remote
+wrangler secret put JWT_SECRET
+npm run deploy
+curl -X POST https://&lt;worker&gt;/api/admin/ingest -H "authorization: Bearer $JWT_SECRET"</pre>
+
+<span class="fixlabel">Step 3 — Point the web app at the deployed API</span>
+<pre class="fix"><span class="c">// Replace the bundled-data path in web/lib/lookup.ts with a call to the
+// deployed Worker, so one engine serves both surfaces and the duplicated
+// logic in web/lib/{engine,geocode,lookup}.ts can be retired (Issue 16).</span>
+NEXT_PUBLIC_API_BASE=https://api.taptoglass.com</pre>
+
+<div class="callout warn" style="margin-top:3mm"><span class="t">Interim mitigation — ship this week regardless</span>
+Until national ingestion runs, the site must not imply coverage it lacks. Implement
+Issue&nbsp;4 (coverage honesty) as the stopgap. A tool that says "we don't have your
+system yet, here's what to do instead" retains trust; one that silently returns
+nothing destroys it.</div>
+</div></div>
+
+<!-- 4 -->
+<div class="issue">
+<div class="issue-hd"><span class="n">04</span><span class="ti">Out-of-coverage results are indistinguishable from clean water</span>
+<span class="pill p-crit">Critical</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>Files:</b> web/components/results/EmptyState.tsx, Hero.tsx</span>
+<span><b>Effort:</b> 2–3 hrs</span><span><b>Impact:</b> Direct trust damage</span><span class="pill p-ok">Quick win</span></div>
+<p>A user outside the three bundled systems receives a report with no contaminants
+and no filters. Nothing distinguishes "we have no data for your system" from "your
+water is clean." For a trust-first brand this is the most damaging possible failure
+mode, and it is fixable today without waiting on Issue&nbsp;3.</p>
+
+<span class="fixlabel">Verbatim copy — the "no data" state (must not read as reassurance)</span>
+<blockquote class="copy">
+<h5>We don't have sampling data for this water system yet</h5>
+<p>We identified your supplier as <strong>{utilityName}</strong>, but we do not
+yet hold contaminant sampling records for it. <strong>This is a gap in our
+coverage — it is not a finding that your water is clean.</strong> We cannot tell
+you either way, and we will not guess.</p>
+<p><strong>What you can do right now:</strong></p>
+<ul>
+<li><strong>Read your utility's Consumer Confidence Report.</strong> Every
+community water system must publish one annually by 1 July. Search
+"{utilityName} consumer confidence report" or request it directly — they are
+required to provide it.</li>
+<li><strong>Check the EPA's records directly.</strong> Your system's federal
+identifier is <strong>{pwsid}</strong>. Violation history is public via EPA
+Envirofacts under that ID.</li>
+<li><strong>Test at the tap.</strong> A certified laboratory test is the only
+method that measures the water you actually drink, including anything your own
+plumbing contributes. It is also the only way to detect a lead service line.</li>
+</ul>
+<p>We are expanding coverage system by system. [Tell us to prioritise this one →]</p>
+</blockquote>
+
+<span class="fixlabel">Verbatim copy — set expectations before the ask (hero sub-line)</span>
+<blockquote class="copy">
+<p>Full contaminant reports are currently available for selected water systems,
+with national coverage rolling out. Every address returns its verified supplier
+and federal violation history.</p>
+</blockquote>
+<p class="small muted">Place directly beneath the search field. Honest, specific,
+and does not undersell what the tool does deliver.</p>
+</div></div>
+
+<!-- 5 -->
+<div class="issue">
+<div class="issue-hd"><span class="n">05</span><span class="ti">Brand identity contradicts the domain on every page</span>
+<span class="pill p-crit">Critical</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>Files:</b> site.ts, layout.tsx, manifest.ts, SiteFooter.tsx, data.ts, opengraph-image.tsx</span>
+<span><b>Effort:</b> 3–4 hrs</span><span><b>Impact:</b> Brand incoherence; SERP/social mismatch</span></div>
+<p>Every title, the application name, the manifest, the JSON-LD Organization node,
+the copyright line, the OG share card and the affiliate redirect subdomain read
+"WaterQualityLens." The domain is taptoglass.com.</p>
+
+<div class="callout"><span class="t">Decide first, then execute</span>
+Either (a) rename the product to <strong>Tap to Glass</strong> everywhere, or
+(b) move the site to waterqualitylens.com. Both are defensible; the present split
+is not. The fixes below assume (a) — the domain is the asset already purchased,
+and "Tap to Glass" is the more memorable consumer name.</div>
+
+<span class="fixlabel">Global rename — exact string replacements</span>
+<pre class="fix"><span class="c"># web/lib/site.ts</span>
+export const SITE_NAME = <span class="a">"Tap to Glass"</span>;
+
+<span class="c"># web/app/layout.tsx — metadata</span>
+title: {
+  default: <span class="a">"Tap to Glass — Address-level tap water quality intelligence"</span>,
+  template: <span class="a">"%s · Tap to Glass"</span>,
+},
+
+<span class="c"># web/app/manifest.ts</span>
+name:       <span class="a">"Tap to Glass — address-level tap water quality intelligence"</span>,
+short_name: <span class="a">"Tap to Glass"</span>,
+
+<span class="c"># web/components/site/SiteFooter.tsx</span>
+© {new Date().getFullYear()} <span class="a">Tap to Glass</span>. All rights reserved.
+
+<span class="c"># web/app/page.tsx — FAQ entity names</span>
+<span class="d">"How does WaterQualityLens find my water system?"</span>
+<span class="a">"How does Tap to Glass find my water system?"</span>
+<span class="d">"Does WaterQualityLens make medical claims?"</span>
+<span class="a">"Does Tap to Glass make medical claims?"</span>
+
+<span class="c"># web/lib/data.ts — all 11 affiliate URLs</span>
+<span class="d">https://affil.waterqualitylens.com/...</span>
+<span class="a">https://go.taptoglass.com/...</span>
+
+<span class="c"># web/app/opengraph-image.tsx and apple-icon.tsx — wordmark text</span></pre>
+<p class="small muted">Verify with
+<code>grep -ril "waterqualitylens" web/ src/</code> — must return nothing but
+this audit's own files.</p>
+</div></div>
+
+<!-- 6 -->
+<div class="issue">
+<div class="issue-hd"><span class="n">06</span><span class="ti">Undisclosed transmission of user addresses to third parties</span>
+<span class="pill p-crit">Critical</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>Files:</b> web/lib/geocode.ts, new /privacy</span><span><b>Effort:</b> 30 min</span>
+<span><b>Impact:</b> Compliance exposure</span><span class="pill p-ok">Quick win</span></div>
+<p>Every address entered is transmitted to <code>geocoding.geo.census.gov</code>,
+and ZIP-fallback lookups additionally query <code>data.epa.gov</code>. The privacy
+summary states only that an address "is not sold" — users are not told it leaves
+the site at all. Both recipients are US government services, so the design is
+benign; the non-disclosure is the defect.</p>
+
+<span class="fixlabel">Covered by the policy in Issue 2 — plus in-context disclosure</span>
+<blockquote class="copy">
+<p>Your address is sent to the U.S. Census Bureau geocoder to locate it, and to
+the U.S. EPA to retrieve your water system's records. It is not stored, profiled,
+or sold. <a>How we handle your data →</a></p>
+</blockquote>
+<p class="small muted">Render beneath the search field at <code>text-xs</code> in
+<code>ink-500</code>. Disclosure at the point of collection is materially stronger
+than disclosure in a linked policy, and it reinforces rather than undermines the
+privacy-first positioning.</p>
+</div></div>
+</div>
+
+<!-- ═══════════════ HIGH ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">C</span>High-Priority Issues (7–15)</h2>
+
+<!-- 7 -->
+<div class="issue">
+<div class="issue-hd"><span class="n">07</span><span class="ti">PWA manifest declares an icon path that does not exist</span>
+<span class="pill p-high">High</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>File:</b> web/app/manifest.ts</span><span><b>Effort:</b> 20 min</span>
+<span><b>Impact:</b> 404 on every install attempt; not installable</span><span class="pill p-ok">Quick win</span></div>
+<p>Verified against the build's own route manifest: the only generated icon route
+is <code>/apple-icon</code>. The manifest declares <code>/apple-icon.png</code>,
+which 404s. Separately, Chrome requires 192×192 and 512×512 PNG icons for install
+eligibility — neither exists, so the site is not installable despite declaring
+<code>display: standalone</code>.</p>
+
+<span class="fixlabel">Verbatim replacement — web/app/manifest.ts</span>
+<pre class="fix">import type { MetadataRoute } from "next";
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    <span class="a">id: "/",</span>
+    name: "Tap to Glass — address-level tap water quality intelligence",
+    short_name: "Tap to Glass",
+    description:
+      "Identify the public water system serving a US address, review the " +
+      "contaminants it reports against federal limits with full provenance, " +
+      "and match the retail filters independently NSF/ANSI-certified to remove them.",
+    start_url: "/",
+    <span class="a">scope: "/",</span>
+    display: "standalone",
+    <span class="a">orientation: "portrait-primary",</span>
+    background_color: "#f6f7f9",
+    theme_color: "#1b3e59",
+    categories: ["utilities", "reference", "health"],
+    icons: [
+      { src: "/icon.svg",      sizes: "any",     type: "image/svg+xml", purpose: "any" },
+      <span class="a">{ src: "/icon-192.png",  sizes: "192x192", type: "image/png",     purpose: "any" },</span>
+      <span class="a">{ src: "/icon-512.png",  sizes: "512x512", type: "image/png",     purpose: "any" },</span>
+      <span class="a">{ src: "/icon-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },</span>
+      <span class="d">{ src: "/apple-icon.png", sizes: "180x180", type: "image/png" },  ← DELETE: 404s</span>
+    ],
+  };
+}</pre>
+<p class="small muted">Place the three PNGs in <code>web/public/</code>. The
+maskable variant needs ~20% safe-zone padding so Android's circular mask does not
+clip the mark. The HTML <code>&lt;link rel="apple-touch-icon"&gt;</code> is already
+correct and needs no change.</p>
+</div></div>
+
+<!-- 8 -->
+<div class="issue">
+<div class="issue-hd"><span class="n">08</span><span class="ti">No rate limiting on any API route</span>
+<span class="pill p-high">High</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>Files:</b> web/app/api/lookup/route.ts, src/router.ts</span><span><b>Effort:</b> 2 hrs</span>
+<span><b>Impact:</b> Abuse vector; risk of Census IP block</span></div>
+<p><code>/api/lookup</code> accepts unbounded requests, each able to trigger an
+outbound call to a no-SLA government geocoder. Sustained abuse risks having the
+origin blocked by Census, which would take down lookups entirely.</p>
+
+<span class="fixlabel">Drop-in edge rate limiter — web/middleware.ts (new file)</span>
+<pre class="fix">import { NextResponse, type NextRequest } from "next/server";
+
+<span class="c">// Fixed-window limiter. In-memory per isolate — adequate as a first line of
+// defence; move to KV/Upstash when traffic justifies shared state.</span>
+const WINDOW_MS = 60_000;
+const MAX_REQUESTS = 20;
+const hits = new Map&lt;string, { count: number; resetAt: number }&gt;();
+
+export function middleware(req: NextRequest) {
+  const ip =
+    req.headers.get("cf-connecting-ip") ??
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    "unknown";
+
+  const now = Date.now();
+  const entry = hits.get(ip);
+
+  if (!entry || now &gt; entry.resetAt) {
+    hits.set(ip, { count: 1, resetAt: now + WINDOW_MS });
+  } else if (++entry.count &gt; MAX_REQUESTS) {
+    return new NextResponse(
+      JSON.stringify({ error: "Too many requests. Please wait a minute." }),
+      {
+        status: 429,
+        headers: {
+          "content-type": "application/json",
+          "retry-after": String(Math.ceil((entry.resetAt - now) / 1000)),
+        },
+      }
+    );
+  }
+
+  <span class="c">// Opportunistic sweep so the map cannot grow without bound.</span>
+  if (hits.size &gt; 10_000) {
+    for (const [k, v] of hits) if (now &gt; v.resetAt) hits.delete(k);
+  }
+
+  return NextResponse.next();
+}
+
+export const config = { matcher: ["/api/:path*", "/results"] };</pre>
+</div></div>
+
+<!-- 9 -->
+<div class="issue">
+<div class="issue-hd"><span class="n">09</span><span class="ti">Entity pages carry no structured data beyond breadcrumbs</span>
+<span class="pill p-high">High</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>Files:</b> app/pws/[pwsid]/page.tsx, app/contaminants/[code]/page.tsx, app/registry/page.tsx</span>
+<span><b>Effort:</b> 3 hrs</span><span><b>Impact:</b> Lost rich results on the pages built to rank</span></div>
+<p>The programmatic entity pages — the site's entire organic growth thesis — emit
+only <code>BreadcrumbList</code>. No <code>Dataset</code>, <code>DefinedTerm</code>,
+or <code>ItemList</code> markup exists.</p>
+
+<span class="fixlabel">PWS pages — add to app/pws/[pwsid]/page.tsx</span>
+<pre class="fix">const pwsJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "@id": `${SITE_URL}/pws/${u.pwsid}#dataset`,
+  name: `${u.name} — drinking water quality data (${u.pwsid})`,
+  description:
+    `Contaminant sampling results, federal violation history and NSF/ANSI-certified ` +
+    `filtration matches for ${u.name}, serving ${u.population_served?.toLocaleString()} ` +
+    `people in ${u.county} County, ${u.state}.`,
+  url: `${SITE_URL}/pws/${u.pwsid}`,
+  license: "https://www.epa.gov/web-policies-and-procedures/epa-web-site-content-policies",
+  isAccessibleForFree: true,
+  creator: { "@type": "Organization", name: "U.S. Environmental Protection Agency" },
+  publisher: { "@id": `${SITE_URL}/#organization` },
+  temporalCoverage: profile.history.at(0)?.sample_date + "/" + profile.history.at(-1)?.sample_date,
+  spatialCoverage: {
+    "@type": "Place",
+    name: `${u.county} County, ${u.state}`,
+    address: { "@type": "PostalAddress", addressRegion: u.state, addressCountry: "US" },
+  },
+  variableMeasured: profile.detections.map((d) =&gt; ({
+    "@type": "PropertyValue",
+    name: d.name,
+    value: d.value,
+    unitText: d.unit,
+    maxValue: d.mcl ?? undefined,
+    measurementTechnique: "EPA SDWIS compliance sampling",
+  })),
+};</pre>
+
+<span class="fixlabel">Contaminant pages — add to app/contaminants/[code]/page.tsx</span>
+<pre class="fix">const contaminantJsonLd = {
+  "@context": "https://schema.org",
+  "@type": ["DefinedTerm", "MedicalWebPage"],
+  "@id": `${SITE_URL}/contaminants/${c.code}#term`,
+  name: c.name,
+  termCode: c.code,
+  description: c.health_effects,
+  url: `${SITE_URL}/contaminants/${c.code}`,
+  inDefinedTermSet: {
+    "@type": "DefinedTermSet",
+    name: "EPA regulated drinking water contaminants",
+    url: `${SITE_URL}/contaminants`,
+  },
+  <span class="c">// Keeps the page inside the medical-information vertical without
+  // making a treatment claim — consistent with the site's medical disclaimer.</span>
+  medicalAudience: "Patient",
+  lastReviewed: new Date().toISOString().slice(0, 10),
+};</pre>
+
+<span class="fixlabel">Registry — add to app/registry/page.tsx</span>
+<pre class="fix">const registryJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Filter Certification Registry",
+  description:
+    "Retail water filters audited against their NSF/ANSI certifications, " +
+    "including SKUs marketed on aesthetic-only standards with no health certification.",
+  numberOfItems: FILTERS.length,
+  itemListElement: FILTERS.map((f, i) =&gt; ({
+    "@type": "ListItem",
+    position: i + 1,
+    item: {
+      "@type": "Product",
+      name: `${f.brand} ${f.model}`,
+      sku: f.sku,
+      brand: { "@type": "Brand", name: f.brand },
+      offers: { "@type": "Offer", price: f.price_usd, priceCurrency: "USD" },
+    },
+  })),
+};</pre>
+</div></div>
+
+<!-- 10 -->
+<div class="issue">
+<div class="issue-hd"><span class="n">10</span><span class="ti">No author, credentials, or named publisher on YMYL content</span>
+<span class="pill p-high">High</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>Files:</b> app/about/page.tsx, app/methodology/page.tsx</span><span><b>Effort:</b> 2 hrs</span>
+<span><b>Impact:</b> Largest single E-E-A-T deficit</span></div>
+<p>Water quality is squarely "Your Money or Your Life." Google's quality guidance
+weights identifiable expertise and accountability heavily for such topics. The
+site currently publishes health-adjacent guidance with no named human or entity
+behind it.</p>
+
+<span class="fixlabel">Verbatim about-page section — adapt bracketed fields honestly</span>
+<blockquote class="copy">
+<h5>Who is behind Tap to Glass</h5>
+<p>Tap to Glass is built and maintained by <strong>[NAME / ENTITY]</strong>,
+[one sentence of relevant background — data engineering, environmental science,
+public-health informatics, or similar]. We are not affiliated with any water
+utility, filter manufacturer, or testing laboratory.</p>
+<p><strong>How we make money.</strong> We earn affiliate commissions when readers
+purchase filtration hardware or laboratory tests through our links. We do not
+accept payment for placement, and no manufacturer can buy eligibility: a product
+appears only if it holds an independent NSF/ANSI health certification for the
+specific contaminants detected.</p>
+<p><strong>Our editorial standard.</strong> Every figure we publish carries its
+source, sample date, and testing agency. Where our confidence in a result is low,
+we say so on the result itself rather than in a footnote. Where a filter is not
+certified for a contaminant, we exclude it rather than qualify it.</p>
+<p><strong>Corrections.</strong> If something here is wrong, write to
+<strong>[CONTACT EMAIL]</strong> with the identifier and your source. We verify
+against the primary record and publish corrections.</p>
+</blockquote>
+
+<span class="fixlabel">Add Organization detail to the site JSON-LD (layout.tsx)</span>
+<pre class="fix">{
+  "@type": "Organization",
+  "@id": `${SITE_URL}/#organization`,
+  name: SITE_NAME,
+  url: SITE_URL,
+  logo: `${SITE_URL}/icon.svg`,
+  <span class="a">founder: { "@type": "Person", name: "[NAME]" },</span>
+  <span class="a">email: "[CONTACT EMAIL]",</span>
+  <span class="a">knowsAbout: [
+    "drinking water quality", "NSF/ANSI water filtration standards",
+    "EPA Safe Drinking Water Act compliance", "PFAS remediation",
+  ],</span>
+}</pre>
+</div></div>
+
+<!-- 11 -->
+<div class="issue">
+<div class="issue-hd"><span class="n">11</span><span class="ti">Lab-test affiliate opportunity is referenced but never actionable</span>
+<span class="pill p-high">High</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>Files:</b> components/results/Disclaimers.tsx, EmptyState.tsx</span><span><b>Effort:</b> 2 hrs</span>
+<span><b>Impact:</b> Highest-yield unexploited revenue path</span><span class="pill p-ok">Quick win</span></div>
+<p>Two disclaimers correctly tell the user that only a point-of-use lab test can
+detect plumbing-borne contamination — and neither offers a way to get one. This
+is the single most valuable gap on the site: lab referrals pay materially better
+than filter hardware, and unlike hardware they are relevant for
+<strong>every</strong> address, including those with no data. This revenue path
+works despite the coverage gap rather than being blocked by it.</p>
+
+<span class="fixlabel">Verbatim CTA — place after the plumbing disclaimer and in every empty state</span>
+<blockquote class="copy">
+<h5>Only a tap test can see your own plumbing</h5>
+<p>The data above describes water as it leaves your utility. It cannot see what
+your home's pipes add to it — and a legacy lead service line is invisible to
+every system-level record, including ours.</p>
+<p>A certified laboratory test on a sample from your own tap is the only way to
+close that gap. We partner with an accredited testing laboratory and earn a
+commission if you order through this link; we recommend testing regardless of
+where you buy it.</p>
+<p>[ Order a certified tap test → ] &nbsp; <em>Verified Partner</em></p>
+</blockquote>
+<p class="small muted">Apply <code>rel="sponsored noopener noreferrer"</code>, as
+the existing <code>Button external</code> component already does.</p>
+</div></div>
+
+<!-- 12 -->
+<div class="issue">
+<div class="issue-hd"><span class="n">12</span><span class="ti">CSP permits 'unsafe-inline' for scripts</span>
+<span class="pill p-high">High</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>File:</b> web/next.config.mjs</span><span><b>Effort:</b> 45 min</span>
+<span><b>Impact:</b> Removes CSP's main XSS defence</span><span class="pill p-ok">Quick win</span></div>
+<p>There is exactly one inline script on the site — the theme bootstrap — and its
+content is a fixed constant. That makes a SHA-256 hash the correct fix; no nonce
+plumbing is required.</p>
+
+<span class="fixlabel">Step 1 — Compute the hash of the exact script body</span>
+<pre class="fix"><span class="c"># The digest must cover the script's text content byte-for-byte,
+# with no surrounding whitespace. Recompute whenever THEME_BOOTSTRAP changes.</span>
+node -e 'const s=require("crypto").createHash("sha256");
+s.update(process.argv[1]);
+console.log("sha256-"+s.digest("base64"))' "$(node -p "
+  require(\"fs\").readFileSync(\"app/layout.tsx\",\"utf8\")
+    .match(/const THEME_BOOTSTRAP = \`([\s\S]*?)\`;/)[1]
+")"</pre>
+
+<span class="fixlabel">Step 2 — Replace the script-src directive</span>
+<pre class="fix"><span class="c">// web/next.config.mjs</span>
+const THEME_SCRIPT_HASH = <span class="a">"'sha256-REPLACE_WITH_COMPUTED_DIGEST'"</span>;
+
+const csp = [
+  "default-src 'self'",
+  <span class="d">"script-src 'self' 'unsafe-inline'",</span>
+  <span class="a">`script-src 'self' ${THEME_SCRIPT_HASH}`,</span>
+  "style-src 'self' 'unsafe-inline'",   <span class="c">// retained: Next/Tailwind inject style tags</span>
+  "img-src 'self' data: blob:",
+  "font-src 'self'",
+  "connect-src 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  <span class="a">"report-to csp-endpoint",</span>
+  "upgrade-insecure-requests",
+].join("; ");</pre>
+<p class="small muted">Verify in DevTools that no CSP violation is logged and that
+dark mode still resolves before first paint. If Next emits additional inline
+bootstrap scripts in a future version, switch to a nonce via middleware.</p>
+</div></div>
+
+<!-- 13 -->
+<div class="issue">
+<div class="issue-hd"><span class="n">13</span><span class="ti">Security headers unverified at the edge</span>
+<span class="pill p-high">High</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>Scope:</b> Production origin</span><span><b>Effort:</b> 15 min</span>
+<span><b>Impact:</b> Header set may not be delivered</span><span class="pill p-ok">Quick win</span></div>
+<p>Headers declared in <code>next.config.mjs</code> are emitted only when the app
+is served by the Next.js runtime. A static export, or a CDN in front of the origin,
+can drop or override them. This audit could not verify delivery.</p>
+
+<span class="fixlabel">Verification command</span>
+<pre class="fix">curl -sSI https://taptoglass.com/ | grep -iE \
+  'strict-transport|content-security|x-content-type|referrer-policy|permissions-policy|x-frame|cross-origin'
+
+<span class="c"># Expected, in full:</span>
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+content-security-policy: default-src 'self'; script-src 'self' 'sha256-...'; ...
+x-content-type-options: nosniff
+referrer-policy: strict-origin-when-cross-origin
+permissions-policy: geolocation=(), camera=(), microphone=(), payment=(), usb=()
+x-frame-options: SAMEORIGIN
+cross-origin-opener-policy: same-origin
+
+<span class="c"># And confirm /results is excluded from indexing:</span>
+curl -sSI 'https://taptoglass.com/results?address=test+address' | grep -i x-robots-tag
+<span class="c"># Expected: x-robots-tag: noindex, nofollow</span></pre>
+<p class="small muted">If headers are missing, replicate them at the CDN layer
+(<code>_headers</code> for Cloudflare Pages / Netlify, or
+<code>vercel.json</code>). Once confirmed, submit the domain to
+<a>hstspreload.org</a> — the HSTS directive is already preload-eligible.</p>
+</div></div>
+
+<!-- 14 -->
+<div class="issue">
+<div class="issue-hd"><span class="n">14</span><span class="ti">Worker API returns Access-Control-Allow-Origin: * on authenticated routes</span>
+<span class="pill p-high">High</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>File:</b> src/lib/http.ts</span><span><b>Effort:</b> 30 min</span>
+<span><b>Impact:</b> Moat dataset readable by any origin</span><span class="pill p-ok">Quick win</span></div>
+<p><code>JSON_HEADERS</code> applies <code>access-control-allow-origin: *</code> to
+every response, including <code>/api/vault/*</code> and
+<code>/api/addresses</code>, with <code>authorization</code> in the allowed
+headers. Bearer-token auth limits classic CSRF, but the curated certification
+dataset the README calls the platform's defensive moat is served to any origin
+that asks.</p>
+
+<span class="fixlabel">Verbatim replacement — src/lib/http.ts header block</span>
+<pre class="fix"><span class="c">// Public read endpoints may be embedded anywhere; authenticated and
+// proprietary-dataset routes are restricted to first-party origins.</span>
+const ALLOWED_ORIGINS = new Set([
+  "https://taptoglass.com",
+  "https://www.taptoglass.com",
+]);
+
+const BASE_HEADERS = {
+  "content-type": "application/json; charset=utf-8",
+  "cache-control": "no-store",
+  "vary": "Origin",
+};
+
+export function corsHeaders(req: Request, scope: "public" | "private" = "private") {
+  const origin = req.headers.get("Origin");
+  if (scope === "public" &amp;&amp; !origin) return {};
+  if (origin &amp;&amp; ALLOWED_ORIGINS.has(origin)) {
+    return {
+      "access-control-allow-origin": origin,
+      "access-control-allow-methods": "GET,POST,PUT,DELETE,OPTIONS",
+      "access-control-allow-headers": "content-type,authorization",
+      "access-control-allow-credentials": "true",
+    };
+  }
+  return {};
+}</pre>
+<p class="small muted">Thread <code>req</code> through <code>json()</code> and
+<code>error()</code>, and mark only genuinely public endpoints
+(<code>/api/contaminants</code>, <code>/api/pws/:id</code>) as
+<code>"public"</code>.</p>
+</div></div>
+
+<!-- 15 -->
+<div class="issue">
+<div class="issue-hd"><span class="n">15</span><span class="ti">Results page blocks LCP on a live third-party geocode</span>
+<span class="pill p-high">High</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>File:</b> web/app/results/page.tsx</span><span><b>Effort:</b> 2 hrs</span>
+<span><b>Impact:</b> LCP directly coupled to upstream latency</span></div>
+<p><code>/results</code> is <code>force-dynamic</code> and awaits a Census geocode
+with an 8-second timeout inside the render path. A slow upstream becomes a slow
+LCP. A <code>loading.tsx</code> exists, which helps perceived latency but does not
+improve the metric.</p>
+
+<span class="fixlabel">Stream the shell, suspend the data</span>
+<pre class="fix"><span class="c">// web/app/results/page.tsx</span>
+import { Suspense } from "react";
+
+export default function ResultsPage({ searchParams }: { searchParams?: SearchParams }) {
+  const address  = firstParam(searchParams?.address).trim();
+  const dwelling = parseDwelling(searchParams?.dwelling_type);
+
+  if (address.length &lt; MIN_ADDRESS_LENGTH) return &lt;PromptState /&gt;;
+
+  return (
+    &lt;div className="bg-surface-sunken"&gt;
+      {/* Static shell paints immediately — this becomes the LCP element. */}
+      &lt;ReportHeader address={address} /&gt;
+      <span class="a">&lt;Suspense fallback={&lt;ReportSkeleton /&gt;}&gt;</span>
+        {/* @ts-expect-error async server component */}
+        &lt;ReportBody address={address} dwelling={dwelling} /&gt;
+      <span class="a">&lt;/Suspense&gt;</span>
+    &lt;/div&gt;
+  );
+}
+
+<span class="c">// Move the awaited runLookup() into ReportBody so only that subtree suspends.</span></pre>
+<p class="small muted">Also reduce the geocode timeout from 8s to ~4s: beyond
+that the gazetteer fallback is a better user experience than continuing to wait.</p>
+</div></div>
+</div>
+
+<!-- ═══════════════ MEDIUM ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">D</span>Medium-Priority Issues (16–25)</h2>
+
+<div class="issue">
+<div class="issue-hd"><span class="n">16</span><span class="ti">Domain logic duplicated across two backends</span><span class="pill p-med">Medium</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>Files:</b> src/services/* vs web/lib/*</span><span><b>Effort:</b> 1–2 days</span></div>
+<p>Geocoding, spatial resolution, exceedance math and set-cover matching are
+implemented twice. They have already drifted: <code>web/lib/engine.ts</code>'s
+<code>resolveSpatial</code> has no Tier-2 path, so the "Matched Proxy" tier the UI
+documents is unreachable on the web surface except via the ZIP fallback's
+hardcoded label.</p>
+<span class="fixlabel">Fix</span>
+<pre class="fix"><span class="c"># Once Issue 3 lands, retire the duplicates and call the Worker:</span>
+git rm web/lib/engine.ts web/lib/geocode.ts web/lib/gazetteer.ts web/lib/envirofacts.ts
+<span class="c"># Keep web/lib/lookup.ts as a thin typed fetch client against NEXT_PUBLIC_API_BASE.</span>
+<span class="c"># Until then, port the Tier-2 branch into web/lib/engine.ts so the tiers match.</span></pre>
+</div></div>
+
+<div class="issue">
+<div class="issue-hd"><span class="n">17</span><span class="ti">Zero frontend tests</span><span class="pill p-med">Medium</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>Scope:</b> web/</span><span><b>Effort:</b> 4 hrs</span></div>
+<p>The backend has 45 passing tests. <code>web/</code> has none — including the
+re-implemented set-cover engine, whose failure mode is recommending a filter that
+does not remove a detected hazard. That is the highest-consequence bug the codebase
+can produce.</p>
+<span class="fixlabel">Minimum viable suite</span>
+<pre class="fix">npm i -D vitest @vitejs/plugin-react
+
+<span class="c">// web/lib/__tests__/engine.test.ts — the safety-critical assertions</span>
+describe("matchFilters", () =&gt; {
+  it("never recommends an NSF 42-only filter for a health contaminant", () =&gt; {
+    const dets = [detection("PB90", 27)];
+    const out  = matchFilters(dets, "UNKNOWN");
+    expect(out.every(f =&gt; f.certified_standards.some(s =&gt; ["53","58","401"].includes(s)))).toBe(true);
+    expect(out.find(f =&gt; f.sku === "BR-OB03")).toBeUndefined();  <span class="c">// 42 only</span>
+    expect(out.find(f =&gt; f.sku === "PL-UNIV01")).toBeUndefined(); <span class="c">// 42 + 372 only</span>
+  });
+
+  it("requires full coverage — never a partial match", () =&gt; {
+    const dets = [detection("PB90", 27), detection("1040", 12)]; <span class="c">// lead + nitrate</span>
+    <span class="c">// Only RO (58) covers nitrate; carbon-only SKUs must be excluded entirely.</span>
+    for (const f of matchFilters(dets, "UNKNOWN")) {
+      expect(f.neutralizes).toEqual(expect.arrayContaining(["PB90","1040"]));
+    }
+  });
+
+  it("returns nothing when no contaminant exceeds its health goal", () =&gt; {
+    expect(matchFilters([detection("CU90", 0.4)], "UNKNOWN")).toEqual([]);
+  });
+});</pre>
+</div></div>
+
+<div class="issue">
+<div class="issue-hd"><span class="n">18</span><span class="ti">Mobile navigation panel has no focus trap</span><span class="pill p-med">Medium</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>File:</b> components/site/MobileNav.tsx</span><span><b>Effort:</b> 45 min</span><span class="pill p-ok">Quick win</span></div>
+<p>Escape-to-close and focus-return are correctly implemented, but focus is never
+moved into the open panel and can tab out of it into the page behind. This is the
+one clear WCAG gap in an otherwise strong accessibility implementation.</p>
+<span class="fixlabel">Add to MobileNav</span>
+<pre class="fix">const panelRef = useRef&lt;HTMLDivElement&gt;(null);
+
+useEffect(() =&gt; {
+  if (!open) return;
+  const panel = panelRef.current;
+  if (!panel) return;
+
+  const focusables = panel.querySelectorAll&lt;HTMLElement&gt;(
+    'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  );
+  focusables[0]?.focus();
+
+  function onKey(e: KeyboardEvent) {
+    if (e.key === "Escape") { setOpen(false); buttonRef.current?.focus(); return; }
+    if (e.key !== "Tab" || focusables.length === 0) return;
+    const first = focusables[0];
+    const last  = focusables[focusables.length - 1];
+    if (e.shiftKey &amp;&amp; document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey &amp;&amp; document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+  document.addEventListener("keydown", onKey);
+  return () =&gt; document.removeEventListener("keydown", onKey);
+}, [open]);
+
+<span class="c">// then: &lt;div id={panelId} ref={panelRef} ...&gt;</span></pre>
+</div></div>
+
+<div class="issue">
+<div class="issue-hd"><span class="n">19</span><span class="ti">No live-region announcement during lookup</span><span class="pill p-med">Medium</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>File:</b> components/AddressSearch.tsx</span><span><b>Effort:</b> 20 min</span><span class="pill p-ok">Quick win</span></div>
+<p>The submit button label changes to "Checking…" but screen-reader users receive
+no announcement that a report is loading or has arrived.</p>
+<span class="fixlabel">Fix</span>
+<pre class="fix">&lt;p role="status" aria-live="polite" className="sr-only"&gt;
+  {pending ? "Looking up your water system, please wait." : ""}
+&lt;/p&gt;</pre>
+<p class="small muted">On <code>/results</code>, give the report container
+<code>tabIndex={-1}</code> and focus it on mount so keyboard users land on the
+answer rather than at the top of the document.</p>
+</div></div>
+
+<div class="issue">
+<div class="issue-hd"><span class="n">20</span><span class="ti">Dwelling selector uses toggle buttons for single-select</span><span class="pill p-med">Medium</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>File:</b> components/AddressSearch.tsx</span><span><b>Effort:</b> 45 min</span></div>
+<p>Three <code>aria-pressed</code> buttons in a <code>fieldset</code> convey "three
+independent toggles," not "choose one of three." Assistive technology cannot infer
+the mutual exclusivity.</p>
+<span class="fixlabel">Fix — native radios, visually styled as chips</span>
+<pre class="fix">&lt;fieldset&gt;
+  &lt;legend className="..."&gt;Dwelling type — tailors the hardware guidance&lt;/legend&gt;
+  {DWELLINGS.map((d) =&gt; (
+    &lt;label key={d.value} className="... has-[:checked]:border-brand-300 has-[:checked]:bg-brand-50"&gt;
+      &lt;input
+        type="radio"
+        name="dwelling"
+        value={d.value}
+        checked={dwelling === d.value}
+        onChange={() =&gt; setDwelling(d.value)}
+        className="sr-only"
+      /&gt;
+      {d.label}
+    &lt;/label&gt;
+  ))}
+&lt;/fieldset&gt;</pre>
+<p class="small muted">Native radios restore arrow-key navigation and correct
+group semantics at no visual cost.</p>
+</div></div>
+
+<div class="issue">
+<div class="issue-hd"><span class="n">21</span><span class="ti">PBKDF2 iteration count below current guidance</span><span class="pill p-med">Medium</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>File:</b> src/lib/auth.ts</span><span><b>Effort:</b> 10 min</span><span class="pill p-ok">Quick win</span></div>
+<p>100,000 iterations against an OWASP recommendation of 600,000 for
+PBKDF2-HMAC-SHA256. The construction is otherwise correct — per-user random salt,
+constant-time comparison, parameters stored alongside the hash, which means
+existing hashes keep verifying after the change.</p>
+<span class="fixlabel">Fix</span>
+<pre class="fix"><span class="d">const PBKDF2_ITERATIONS = 100_000;</span>
+<span class="a">const PBKDF2_ITERATIONS = 600_000;</span>
+
+<span class="c">// verifyPassword() already reads the iteration count from the stored hash,
+// so old credentials continue to verify. Optionally re-hash on next successful
+// login to migrate users forward.</span></pre>
+</div></div>
+
+<div class="issue">
+<div class="issue-hd"><span class="n">22</span><span class="ti">og:site_name lost and twitter:title generic on the homepage</span><span class="pill p-med">Medium</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>File:</b> web/app/page.tsx</span><span><b>Effort:</b> 10 min</span><span class="pill p-ok">Quick win</span></div>
+<p>Verified in the built HTML: the page-level <code>openGraph</code> object
+overrides the root without re-declaring <code>siteName</code>, so no
+<code>og:site_name</code> is emitted. <code>twitter:title</code> falls back to the
+bare brand string rather than the page title.</p>
+<span class="fixlabel">Fix</span>
+<pre class="fix">openGraph: {
+  type: "website",
+  <span class="a">siteName: SITE_NAME,</span>
+  <span class="a">locale: "en_US",</span>
+  title: "Tap to Glass — Address-level tap water quality intelligence",
+  description: "...",
+  url: "/",
+},
+<span class="a">twitter: {
+  card: "summary_large_image",
+  title: "Tap to Glass — What's in your tap water, and what removes it",
+  description: "...",
+},</span></pre>
+</div></div>
+
+<div class="issue">
+<div class="issue-hd"><span class="n">23</span><span class="ti">No outbound citations to primary sources</span><span class="pill p-med">Medium</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>Files:</b> methodology, contaminant, PWS pages</span><span><b>Effort:</b> 2 hrs</span></div>
+<p>EPA, NSF, WQA and TEMM are named throughout but never linked. On a site whose
+entire positioning is data provenance, unlinked sourcing is conspicuous — and
+authoritative outbound links are a positive quality signal.</p>
+<span class="fixlabel">Add a sources block to each contaminant page</span>
+<pre class="fix">&lt;section aria-labelledby="sources-h"&gt;
+  &lt;h2 id="sources-h"&gt;Primary sources&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations"
+           rel="noopener"&gt;EPA National Primary Drinking Water Regulations&lt;/a&gt; — MCL and MCLG values&lt;/li&gt;
+    &lt;li&gt;&lt;a href="https://www.epa.gov/enviro/sdwis-search" rel="noopener"&gt;EPA SDWIS&lt;/a&gt;
+        — sampling results and violation history&lt;/li&gt;
+    &lt;li&gt;&lt;a href="https://www.nsf.org/testing/water" rel="noopener"&gt;NSF International&lt;/a&gt;
+        — certification listings verified {LAST_AUDIT_DATE}&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/section&gt;</pre>
+</div></div>
+
+<div class="issue">
+<div class="issue-hd"><span class="n">24</span><span class="ti">No freshness signals on entity pages</span><span class="pill p-med">Medium</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>Files:</b> contaminant and PWS pages</span><span><b>Effort:</b> 1 hr</span><span class="pill p-ok">Quick win</span></div>
+<p>Sitemap <code>lastModified</code> is data-driven and correct, but no
+user-visible or machine-readable freshness marker appears on the pages themselves.
+For regulated data this is both a trust and a ranking signal.</p>
+<span class="fixlabel">Fix</span>
+<pre class="fix">&lt;p className="text-xs text-ink-500"&gt;
+  Certification data last audited &lt;time dateTime={LAST_AUDIT}&gt;{formatDate(LAST_AUDIT)}&lt;/time&gt;
+  {" · "}Sampling data current to &lt;time dateTime={newest}&gt;{formatDate(newest)}&lt;/time&gt;
+&lt;/p&gt;
+
+<span class="c">// and in the page metadata:</span>
+other: { "article:modified_time": newestSampleDate }</pre>
+</div></div>
+
+<div class="issue">
+<div class="issue-hd"><span class="n">25</span><span class="ti">CSS bundle is large relative to the surface area</span><span class="pill p-med">Medium</span></div>
+<div class="issue-bd">
+<div class="meta-row"><span><b>Measured:</b> 58.4 kB uncompressed</span><span><b>Effort:</b> 1 hr</span></div>
+<p>Large for a site of this size. Likely driven by the extensive custom shadow,
+radius and fluid-type scales plus the dark-variant expansion of every utility.</p>
+<span class="fixlabel">Investigate</span>
+<pre class="fix">npx @next/bundle-analyzer
+<span class="c"># or inspect the emitted stylesheet directly:</span>
+grep -o '\.[a-z-]*{' .next/static/css/*.css | sort | uniq -c | sort -rn | head -40
+
+<span class="c"># Likely wins:
+#  - prune unused steps from the boxShadow / borderRadius / fontSize scales
+#  - confirm content globs are not over-matching
+#  - ensure the CDN serves brotli (58.4 kB → ~9 kB)</span>
+curl -sI -H 'Accept-Encoding: br' https://taptoglass.com/_next/static/css/*.css | grep -i content-encoding</pre>
+</div></div>
+</div>
+
+<!-- ═══════════════ LOW ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">E</span>Low-Priority Issues (26–31)</h2>
+
+<div class="issue">
+<div class="issue-hd"><span class="n">26</span><span class="ti">Obsolete keywords meta tag emitted</span><span class="pill p-low">Low</span></div>
+<div class="issue-bd"><div class="meta-row"><span><b>File:</b> app/layout.tsx</span><span class="pill p-ok">Quick win</span></div>
+<p>Ignored by every major engine since 2009. Harmless but signals dated practice to
+anyone inspecting the source.</p>
+<pre class="fix"><span class="d">keywords: ["tap water quality", "NSF 53 filter", ...],   ← delete</span></pre>
+</div></div>
+
+<div class="issue">
+<div class="issue-hd"><span class="n">27</span><span class="ti">robots.txt Host directive is non-standard</span><span class="pill p-low">Low</span></div>
+<div class="issue-bd"><div class="meta-row"><span><b>File:</b> app/robots.ts</span><span class="pill p-ok">Quick win</span></div>
+<p><code>Host:</code> is a Yandex extension; Google and Bing ignore it. Harmless,
+but canonical tags already carry the signal.</p>
+<pre class="fix"><span class="d">host: SITE_URL,   ← optional removal</span></pre>
+</div></div>
+
+<div class="issue">
+<div class="issue-hd"><span class="n">28</span><span class="ti">/pws index page is thin</span><span class="pill p-low">Low</span></div>
+<div class="issue-bd"><div class="meta-row"><span><b>Measured:</b> 394 rendered words</span></div>
+<p>Three entries and little explanatory content. Resolves naturally with Issue 3;
+until then add an explanation of what a PWSID is, how systems are classified
+(CWS / NTNCWS / TNCWS), and what source water types mean — content that will
+remain useful once the index grows.</p>
+</div></div>
+
+<div class="issue">
+<div class="issue-hd"><span class="n">29</span><span class="ti">No search or filtering on entity indexes</span><span class="pill p-low">Low</span></div>
+<div class="issue-bd"><div class="meta-row"><span><b>Files:</b> /contaminants, /registry</span></div>
+<p>27 contaminants and 11 SKUs are browsable today. Add client-side filtering
+before either list exceeds ~50 rows. Filter by contaminant class and by
+health-vs-aesthetic certification respectively.</p>
+</div></div>
+
+<div class="issue">
+<div class="issue-hd"><span class="n">30</span><span class="ti">Copyright year fixed at build time</span><span class="pill p-low">Low</span></div>
+<div class="issue-bd"><div class="meta-row"><span><b>File:</b> SiteFooter.tsx</span><span class="pill p-ok">Quick win</span></div>
+<p><code>new Date().getFullYear()</code> in a server component is evaluated when
+the page is prerendered, so a statically built site will display a stale year
+until redeployed. Either accept it with a scheduled rebuild, or hardcode a
+founding year: <code>© 2026 Tap to Glass</code>.</p>
+</div></div>
+
+<div class="issue">
+<div class="issue-hd"><span class="n">31</span><span class="ti">No CSP violation reporting</span><span class="pill p-low">Low</span></div>
+<div class="issue-bd"><div class="meta-row"><span><b>File:</b> next.config.mjs</span><span class="pill p-ok">Quick win</span></div>
+<p>CSP failures are currently silent, so a policy regression would go unnoticed.</p>
+<pre class="fix">{ key: "Reporting-Endpoints", value: 'csp-endpoint="https://taptoglass.com/api/csp-report"' }
+<span class="c">// plus "report-to csp-endpoint" in the policy (see Issue 12), and a
+// route handler that logs and returns 204.</span></pre>
+</div></div>
+</div>
+
+<!-- ═══════════════ MONETIZATION ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">F</span>Monetization &amp; Affiliate Opportunity Map</h2>
+
+<p class="lede">Mapped to the portfolio's established style: disclosed affiliate
+placement, no display advertising on the utility surface, and no compromise of the
+certification-first ranking that constitutes the moat.</p>
+
+<table>
+<tr><th style="width:38mm">Opportunity</th><th style="width:18mm">Yield</th><th style="width:20mm">Effort</th><th>Notes &amp; sequencing</th></tr>
+
+<tr><td><strong>Certified lab tests</strong><br><span class="small muted">Tap Score / SimpleLab</span></td>
+<td><span class="pill p-ok">Highest</span></td><td>Low</td>
+<td><strong>Do this first.</strong> Higher commission than hardware, and relevant for
+<em>every</em> address — including the ~99.9% with no coverage. The plumbing
+disclaimer already argues the case honestly; it simply has no CTA. See Issue 11.</td></tr>
+
+<tr><td><strong>Filter hardware</strong><br><span class="small muted">11 SKUs live</span></td>
+<td>High</td><td>Blocked</td>
+<td>Infrastructure complete and correctly disclosed. Inert until coverage lands
+(Issue 3). Migrate the redirect domain to <code>go.taptoglass.com</code> (Issue 5).</td></tr>
+
+<tr><td><strong>Replacement cartridges</strong></td><td>Recurring</td><td>Medium</td>
+<td>The genuinely underrated play. Cartridges are consumable on a 3–6 month cycle
+against a one-time appliance purchase. Capture install date, email a replacement
+reminder, attach the affiliate link. Highest lifetime value per acquired user on
+the site.</td></tr>
+
+<tr><td><strong>Email list</strong><br><span class="small muted">Water-quality alerts</span></td>
+<td>Compounding</td><td>Medium</td>
+<td>The Worker already implements saved addresses and alert delivery; none of it
+is exposed in the web UI. "Email me if my utility reports a violation" is a
+genuinely useful, privacy-defensible opt-in — and the only owned audience channel
+available.</td></tr>
+
+<tr><td><strong>Whole-home / softeners</strong></td><td>High ticket</td><td>Medium</td>
+<td>Only one whole-house SKU is stocked. Hard-water and sediment queries convert
+at high order values and are adjacent to existing content.</td></tr>
+
+<tr><td><strong>Display advertising</strong></td><td>Low</td><td>Blocked</td>
+<td><strong>Recommend against on the tool surface.</strong> Blocked until Issue 2
+anyway. Ad tech would forfeit the 87.1 kB bundle, the enforceable CSP, and the
+zero-tracking claim — the three assets that differentiate the property.</td></tr>
+
+<tr><td><strong>Utility/municipal licensing</strong></td><td>Speculative</td><td>High</td>
+<td>Longer-term. Small utilities must publish annual CCRs and many do it badly.
+The report template already produces a superior artifact.</td></tr>
+</table>
+
+<div class="callout"><span class="t">Sequencing principle</span>
+Lab tests before hardware. Hardware requires coverage; lab tests do not, they pay
+better, and they are recommended at precisely the moment the site's own disclaimer
+establishes the need. It is the one revenue path that works <em>because</em> of the
+coverage gap rather than in spite of it — and it is honest, which is why it fits
+the brand.</div>
+
+<h3>Content-to-revenue mapping</h3>
+<table>
+<tr><th style="width:52mm">Content asset</th><th style="width:30mm">Intent</th><th>Monetization path</th></tr>
+<tr><td>/contaminants/PB90 (Lead)</td><td>Informational, high volume</td><td>Lab test → NSF 53 pitcher → under-sink RO</td></tr>
+<tr><td>/contaminants/PFOA, PFOS</td><td>Informational, rising</td><td>NSF 53/58 only — highest-margin category</td></tr>
+<tr><td>/contaminants/1040 (Nitrate)</td><td>Rural, high intent</td><td>RO exclusively — the nitrate warning already makes the technical case</td></tr>
+<tr><td>/registry (deceptive SKUs)</td><td>Commercial investigation</td><td>Highest trust-to-conversion ratio on the site</td></tr>
+<tr><td>/pws/[pwsid] entity pages</td><td>Local, transactional</td><td>The volume engine once Issue 3 lands</td></tr>
+<tr><td>"How to read your CCR" (new)</td><td>Informational</td><td>Lab test; strong internal-link hub</td></tr>
+</table>
+</div>
+
+<!-- ═══════════════ 30-DAY PLAN ═══════════════ -->
+<div class="section">
+<h2 class="sec"><span class="num">G</span>30-Day Improvement &amp; Content Plan</h2>
+
+<p class="lede">Sequenced so that trust and compliance land before traffic
+acquisition — there is no value in ranking a site that cannot be contacted, and
+active harm in ranking one whose canonicals name another domain. Content targets
+are additive to the existing 27 contaminant entities and respect the property's
+privacy-first, lightweight character throughout.</p>
+
+<div class="callout warn"><span class="t">Governing constraint</span>
+No item in this plan introduces a third-party script, an analytics tag, a cookie,
+or an ad unit. Every content addition is statically rendered from the existing
+component library.</div>
+
+<!-- WEEK 1 -->
+<div class="week">
+<h3>Week 1 — Days 1–7 · Stop the bleeding</h3>
+<p class="goal">Goal: nothing on the site misrepresents itself, and it can be
+contacted. No content work until this is done.</p>
+<table>
+<tr><th style="width:20mm">Day</th><th style="width:48mm">Task</th><th>Detail &amp; acceptance</th></tr>
+<tr><td><span class="daychip">D1</span></td><td>Verify live origin</td><td>Issues 1, 13. Confirm canonical, robots.txt and header set against production. <strong>Blocks everything else.</strong></td></tr>
+<tr><td><span class="daychip">D1</span></td><td>Brand decision</td><td>Issue 5. Choose Tap to Glass or waterqualitylens.com. Cannot be deferred — every later asset embeds it.</td></tr>
+<tr><td><span class="daychip">D2</span></td><td>Publish privacy, terms, contact</td><td>Issue 2. Copy is verbatim in §B; fill bracketed fields, set the date, wire into footer and sitemap.</td></tr>
+<tr><td><span class="daychip">D3</span></td><td>Execute the rename</td><td>Issue 5. Global replace, OG card, manifest, affiliate domain. Verify with <code>grep -ril</code>.</td></tr>
+<tr><td><span class="daychip">D3</span></td><td>In-context data disclosure</td><td>Issue 6. One line beneath the search field.</td></tr>
+<tr><td><span class="daychip">D4</span></td><td>Coverage honesty</td><td>Issue 4. The "no data ≠ clean water" empty state and hero expectation line. Highest trust-per-hour item in the plan.</td></tr>
+<tr><td><span class="daychip">D5</span></td><td>Fix manifest icons</td><td>Issue 7. Generate 192/512/maskable PNGs; remove the 404 entry.</td></tr>
+<tr><td><span class="daychip">D5</span></td><td>Lab-test CTA</td><td>Issue 11. Turns an existing honest argument into the first live revenue path.</td></tr>
+<tr><td><span class="daychip">D6</span></td><td>Rate limiting + CSP hash</td><td>Issues 8, 12. Both drop-in.</td></tr>
+<tr><td><span class="daychip">D7</span></td><td>Search Console &amp; Bing</td><td>Register both, submit sitemap, capture the baseline indexed count against the expected 37 URLs.</td></tr>
+</table>
+</div>
+
+<!-- WEEK 2 -->
+<div class="week">
+<h3>Week 2 — Days 8–14 · Authority foundations</h3>
+<p class="goal">Goal: the site can demonstrate who stands behind it, and its best
+pages become eligible for rich results.</p>
+<table>
+<tr><th style="width:20mm">Day</th><th style="width:48mm">Task</th><th>Detail &amp; acceptance</th></tr>
+<tr><td><span class="daychip">D8</span></td><td>E-E-A-T rewrite of /about</td><td>Issue 10. Named operator, background, funding model, corrections policy. Largest single ranking-signal gain available.</td></tr>
+<tr><td><span class="daychip">D9</span></td><td>Entity structured data</td><td>Issue 9. Dataset, DefinedTerm, ItemList. Validate every type in the Rich Results Test.</td></tr>
+<tr><td><span class="daychip">D10</span></td><td>Primary-source citations</td><td>Issue 23. Sources block on all 27 contaminant pages and /methodology.</td></tr>
+<tr><td><span class="daychip">D10</span></td><td>Freshness markers</td><td>Issue 24. Visible and machine-readable audit/sampling dates.</td></tr>
+<tr><td><span class="daychip">D11–12</span></td><td><strong>Content: "How to read your utility's water quality report"</strong></td><td>~1,800 words. The definitive CCR explainer — what utilities must publish, what the tables mean, what they legally may omit. Hub page; links to every contaminant entity. Targets a large, evergreen, genuinely underserved query set.</td></tr>
+<tr><td><span class="daychip">D13</span></td><td><strong>Content: "NSF 42 vs 53 vs 58 vs 401"</strong></td><td>~1,500 words. Extends the site's sharpest differentiator into a standalone asset. High commercial intent; links directly to /registry.</td></tr>
+<tr><td><span class="daychip">D14</span></td><td>A11y fixes</td><td>Issues 18, 19, 20. Focus trap, live region, radio semantics. Re-run an Axe pass.</td></tr>
+</table>
+</div>
+
+<!-- WEEK 3 -->
+<div class="week">
+<h3>Week 3 — Days 15–21 · Coverage and depth</h3>
+<p class="goal">Goal: begin closing the coverage gap and expand the indexable
+surface with genuinely useful pages.</p>
+<table>
+<tr><th style="width:20mm">Day</th><th style="width:48mm">Task</th><th>Detail &amp; acceptance</th></tr>
+<tr><td><span class="daychip">D15–17</span></td><td><strong>Deploy the Worker &amp; run ingestion</strong></td><td>Issue 3. Provision D1/KV/Queues, migrate, deploy, run the first SDWIS ingestion. The project's critical path.</td></tr>
+<tr><td><span class="daychip">D18</span></td><td>Expand PWS coverage</td><td>Target the 50 largest US systems by population. Converts /pws from a 3-row placeholder into a real index and gives the programmatic template fuel.</td></tr>
+<tr><td><span class="daychip">D19</span></td><td><strong>Content: "PFAS in US drinking water"</strong></td><td>~2,000 words. The highest-growth query cluster in the niche. Covers the 2024 federal limits, what they mean, and which certifications actually remove PFAS. Links to PFOA/PFOS/GenX/PFHxS/PFNA entities.</td></tr>
+<tr><td><span class="daychip">D20</span></td><td><strong>Content: "Does my home have a lead service line?"</strong></td><td>~1,400 words. High-intent, directly monetizable via lab tests, and pairs with the plumbing disclaimer the site already makes.</td></tr>
+<tr><td><span class="daychip">D21</span></td><td>Frontend test suite</td><td>Issue 17. Lock the set-cover safety invariants before coverage growth multiplies the blast radius.</td></tr>
+</table>
+</div>
+
+<!-- WEEK 4 -->
+<div class="week">
+<h3>Week 4 — Days 22–30 · Compounding assets</h3>
+<p class="goal">Goal: build the owned audience channel and the recurring-revenue
+mechanism; consolidate.</p>
+<table>
+<tr><th style="width:20mm">Day</th><th style="width:48mm">Task</th><th>Detail &amp; acceptance</th></tr>
+<tr><td><span class="daychip">D22–23</span></td><td>Expose saved addresses &amp; alerts</td><td>Surface the Worker's existing alert capability. Privacy-respecting opt-in, double opt-in email, one-click unsubscribe. The only owned-audience channel available.</td></tr>
+<tr><td><span class="daychip">D24</span></td><td>Cartridge reminder flow</td><td>Capture install date, schedule replacement email with affiliate link. Converts one-time purchases into recurring revenue.</td></tr>
+<tr><td><span class="daychip">D25</span></td><td><strong>Content: "Water filter pitcher comparison"</strong></td><td>~1,600 words. Commercial-intent, built directly from the certification registry so it cannot drift from the data. Highest conversion content on the site.</td></tr>
+<tr><td><span class="daychip">D26</span></td><td><strong>Content: "Nitrate in well and rural water"</strong></td><td>~1,300 words. Underserved, high-stakes (infant methemoglobinemia), and RO-exclusive — the nitrate warning already makes the technical argument.</td></tr>
+<tr><td><span class="daychip">D27</span></td><td>Internal linking pass</td><td>Every contaminant entity → its guide; every guide → the lookup; every PWS page → its detected contaminants. Wire the hub-and-spoke properly.</td></tr>
+<tr><td><span class="daychip">D28</span></td><td>Performance &amp; medium issues</td><td>Issues 15, 25, 16. Suspense boundary on /results, CSS audit, begin retiring duplicated logic.</td></tr>
+<tr><td><span class="daychip">D29</span></td><td>Low-priority sweep</td><td>Issues 26, 27, 30, 31. All quick wins; batch in one commit.</td></tr>
+<tr><td><span class="daychip">D30</span></td><td>Measure &amp; re-audit</td><td>Lighthouse on 5 representative routes; Search Console indexed count vs. Day-7 baseline; confirm all 6 critical issues closed.</td></tr>
+</table>
+</div>
+
+<h3>Content plan summary</h3>
+<table>
+<tr><th style="width:62mm">New asset</th><th style="width:20mm">Words</th><th>Primary intent</th></tr>
+<tr><td>How to read your utility's water quality report</td><td>~1,800</td><td>Informational hub · lab test</td></tr>
+<tr><td>NSF 42 vs 53 vs 58 vs 401</td><td>~1,500</td><td>Commercial investigation · hardware</td></tr>
+<tr><td>PFAS in US drinking water</td><td>~2,000</td><td>Informational · highest growth</td></tr>
+<tr><td>Does my home have a lead service line?</td><td>~1,400</td><td>High intent · lab test</td></tr>
+<tr><td>Water filter pitcher comparison</td><td>~1,600</td><td>Transactional · hardware</td></tr>
+<tr><td>Nitrate in well and rural water</td><td>~1,300</td><td>Informational · RO hardware</td></tr>
+<tr style="background:var(--bg-tint) !important"><td><strong>Total new editorial</strong></td><td><strong>~9,600</strong></td><td><strong>Plus ~50 new PWS entity pages</strong></td></tr>
+</table>
+
+<div class="callout good"><span class="t">Why this sequence and not a faster one</span>
+It would be possible to front-load content and chase traffic in week 1. That would
+be a mistake here. Until the canonical origin is verified, published content may
+accrue to another domain. Until a contact page and privacy policy exist, YMYL
+content is competing with a structural E-E-A-T handicap. And until the coverage
+message is honest, every new visitor the content attracts meets the site's worst
+failure mode. Trust infrastructure first is slower for two weeks and faster for
+everything after.</div>
+
+<hr class="soft">
+<p class="small muted">Document 2 of 2 · taptoglass.com remediation plan ·
+29 August 2026 · Companion to Document 1 (Full Audit Report). Issue numbering is
+stable; cite it in tickets and commits. Issues 1 and 13 require live-origin
+verification before closure.</p>
+</div>
+
+</body></html>
