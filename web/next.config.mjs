@@ -21,6 +21,10 @@ const csp = [
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  async redirects() {
+    // Keep older /check links usable; the address form lives on the homepage.
+    return [{ source: "/check", destination: "/#lookup", permanent: false }];
+  },
   async headers() {
     return [
       {
