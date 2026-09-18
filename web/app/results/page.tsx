@@ -32,11 +32,12 @@ function parseDwelling(value: string | string[] | undefined): DwellingType {
   return "UNKNOWN";
 }
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams?: SearchParams;
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    searchParams?: Promise<SearchParams>;
+  }
+): Promise<Metadata> {
+  const searchParams = await props.searchParams;
   const address = firstParam(searchParams?.address).trim();
   const title = address ? `Water report for ${address}` : "Water report";
   return {
@@ -49,11 +50,12 @@ export async function generateMetadata({
   };
 }
 
-export default async function ResultsPage({
-  searchParams,
-}: {
-  searchParams?: SearchParams;
-}) {
+export default async function ResultsPage(
+  props: {
+    searchParams?: Promise<SearchParams>;
+  }
+) {
+  const searchParams = await props.searchParams;
   const address = firstParam(searchParams?.address).trim();
   const dwelling = parseDwelling(searchParams?.dwelling_type);
 

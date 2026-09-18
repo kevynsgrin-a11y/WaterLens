@@ -67,11 +67,12 @@ function assess(profile: NonNullable<ReturnType<typeof demoProfile>>): Assessmen
 
 // --- Metadata ---------------------------------------------------------------
 
-export function generateMetadata({
-  params,
-}: {
-  params: { pwsid: string };
-}): Metadata {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ pwsid: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   const profile = demoProfile(params.pwsid.toUpperCase());
   if (!profile) {
     return { title: "Water system not found", robots: { index: false, follow: true } };
@@ -322,7 +323,8 @@ function RecommendationCard({ r }: { r: RecommendedFilter }) {
 
 // --- Page -------------------------------------------------------------------
 
-export default function PwsPage({ params }: { params: { pwsid: string } }) {
+export default async function PwsPage(props: { params: Promise<{ pwsid: string }> }) {
+  const params = await props.params;
   const profile = demoProfile(params.pwsid.toUpperCase());
   if (!profile) notFound();
 

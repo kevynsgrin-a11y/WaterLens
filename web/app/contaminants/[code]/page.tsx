@@ -156,11 +156,12 @@ function goalValue(c: ContaminantDefinition): string | null {
   return c.health_goal === 0 ? "0" : formatValue(c.health_goal, unitLabel(c));
 }
 
-export function generateMetadata({
-  params,
-}: {
-  params: { code: string };
-}): Metadata {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ code: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   const c = CONTAMINANT_BY_CODE.get(params.code.toUpperCase());
   if (!c) {
     return { title: "Contaminant not found", robots: { index: false, follow: true } };
@@ -292,7 +293,8 @@ function RegulationCopy({ c }: { c: ContaminantDefinition }) {
 
 // --- Page -------------------------------------------------------------------
 
-export default function ContaminantPage({ params }: { params: { code: string } }) {
+export default async function ContaminantPage(props: { params: Promise<{ code: string }> }) {
+  const params = await props.params;
   const c = CONTAMINANT_BY_CODE.get(params.code.toUpperCase());
   if (!c) notFound();
 
