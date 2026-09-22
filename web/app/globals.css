@@ -258,3 +258,128 @@
     box-shadow: none !important;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Visual polish pass — 2026-09-22 (owner-directed "high-dollar" round).
+   Additive only: depth, glow, gradient hairlines, keyboard affordance.
+   All motion is gated by the reduced-motion floor at the top of this file,
+   and every colour routes through theme tokens or theme-aware overlays.
+   --------------------------------------------------------------------------- */
+
+@layer utilities {
+  /* Slow ambient drift behind the hero — two soft brand radials on a
+     transform-only loop. Painted as a pseudo layer so it never affects
+     layout, and disabled entirely under reduced motion. */
+  .hero-aura::before {
+    content: "";
+    position: absolute;
+    inset: -20%;
+    pointer-events: none;
+    background:
+      radial-gradient(38% 32% at 24% 28%, rgba(43, 118, 166, 0.14), transparent 70%),
+      radial-gradient(30% 30% at 76% 66%, rgba(52, 132, 101, 0.1), transparent 72%);
+    animation: hero-drift 26s ease-in-out infinite alternate;
+  }
+  :root[data-theme="dark"] .hero-aura::before {
+    background:
+      radial-gradient(38% 32% at 24% 28%, rgba(88, 166, 217, 0.16), transparent 70%),
+      radial-gradient(30% 30% at 76% 66%, rgba(94, 187, 148, 0.1), transparent 72%);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-aura::before {
+      animation: none;
+    }
+  }
+  @keyframes hero-drift {
+    from {
+      transform: translate3d(-2.5%, -1.5%, 0) scale(1);
+    }
+    to {
+      transform: translate3d(2.5%, 2%, 0) scale(1.06);
+    }
+  }
+
+  /* Focused-search ambience: a soft brand bloom that breathes once when the
+     lookup panel gains focus. Sits behind the panel, never over text. */
+  .glow-brand {
+    position: relative;
+  }
+  .glow-brand::after {
+    content: "";
+    position: absolute;
+    inset: -14px -10px;
+    z-index: -1;
+    border-radius: 28px;
+    background:
+      radial-gradient(60% 70% at 50% 50%, rgba(43, 118, 166, 0.22), transparent 75%);
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+  .glow-brand:focus-within::after {
+    opacity: 1;
+  }
+
+  /* Gradient hairline ring for the heroics (search panel, verdict card).
+     One-pixel gradient border via mask composite — works on any surface. */
+  .gradient-ring {
+    position: relative;
+  }
+  .gradient-ring::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(43, 118, 166, 0.55),
+      rgba(52, 132, 101, 0.28) 45%,
+      rgba(43, 118, 166, 0.08)
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Interactive-card elevation with a brand-tinted edge on hover. */
+  .card-lift {
+    transition:
+      transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.25s;
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .card-lift:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 1px 2px rgba(13, 26, 38, 0.06),
+        0 12px 32px -8px rgba(27, 62, 89, 0.18);
+      border-color: rgba(43, 118, 166, 0.35);
+    }
+  }
+
+  /* Keyboard affordance chip for the "/" search shortcut. */
+  .kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.4rem;
+    height: 1.4rem;
+    padding: 0 0.35rem;
+    border-radius: 0.375rem;
+    border: 1px solid var(--hairline);
+    border-bottom-width: 2px;
+    background: var(--surface-sunken);
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.7rem;
+    line-height: 1;
+    color: var(--tw-prose-body, inherit);
+  }
+}

@@ -36,6 +36,7 @@ export default function AddressSearch({
   const [address, setAddress] = useState(initialAddress);
   const [dwelling, setDwelling] = useState<DwellingType>(initialDwelling);
   const [error, setError] = useState<string | null>(null);
+  const [focused, setFocused] = useState(false);
   const [pendingExample, setPendingExample] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const errorId = useId();
@@ -44,6 +45,28 @@ export default function AddressSearch({
   useEffect(() => {
     if (!pending) setPendingExample(null);
   }, [pending]);
+
+  // "/" anywhere focuses the lookup — the one interaction power users repeat.
+  // Ignored while typing in any other field so it never swallows input.
+  useEffect(() => {
+    function onKey(event: KeyboardEvent) {
+      if (event.key !== "/" || event.metaKey || event.ctrlKey || event.altKey) return;
+      const active = document.activeElement;
+      if (
+        active instanceof HTMLElement &&
+        (active.tagName === "INPUT" ||
+          active.tagName === "TEXTAREA" ||
+          active.tagName === "SELECT" ||
+          active.isContentEditable)
+      ) {
+        return;
+      }
+      event.preventDefault();
+      document.getElementById(inputId)?.focus();
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [inputId]);
 
   function go(addr: string, dw: DwellingType = dwelling) {
     const a = addr.trim();
@@ -69,6 +92,8 @@ export default function AddressSearch({
           go(address);
         }}
         className={`rounded-2xl border p-2 transition-[border-color,box-shadow] duration-200 focus-within:ring-2 focus-within:ring-brand-400/40 ${
+          variant === "hero" ? "gradient-ring" : ""
+        } ${
           dark
             ? "border-white/15 bg-white/[0.07] focus-within:border-brand-300"
             : `border-ink-200 bg-surface-raised focus-within:border-brand-300 dark:border-white/15 ${
@@ -108,12 +133,24 @@ export default function AddressSearch({
               aria-invalid={error ? true : undefined}
               aria-describedby={error ? errorId : undefined}
               placeholder="Home address or ZIP"
+              aria-keyshortcuts="/"
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
               className={`w-full bg-transparent py-3 text-base focus:outline-none ${
                 dark
                   ? "text-white placeholder:text-brand-200/60"
                   : "text-ink-900 placeholder:text-ink-500 dark:text-white dark:placeholder:text-ink-400"
               }`}
             />
+            {variant === "hero" && !focused && address.length === 0 ? (
+              <span
+                aria-hidden="true"
+                className="kbd hidden shrink-0 sm:inline-flex"
+                title="Press / to search"
+              >
+                /
+              </span>
+            ) : null}
           </div>
           <button
             type="submit"
@@ -181,38 +218,44 @@ export default function AddressSearch({
       </div>
 
       {variant === "hero" && (
-        <p
-          className={`mt-4 text-sm ${align === "center" ? "text-center" : ""} ${
-            dark ? "text-brand-200/80" : "text-ink-500 dark:text-ink-400"
+        <div
+          className={`mt-4 flex flex-wrap items-center gap-2 ${
+            align === "center" ? "justify-center" : "justify-start"
           }`}
         >
-          Try an example:{" "}
-          {EXAMPLES.map((ex, i) => (
-            <span key={ex.label}>
-              <button
-                type="button"
-                disabled={pending}
-                onClick={() => {
-                  setAddress(ex.address);
-                  setPendingExample(ex.label);
-                  go(ex.address);
-                }}
-                className={`font-medium underline-offset-2 transition-colors hover:underline disabled:opacity-50 disabled:no-underline ${
-                  dark ? "text-brand-200" : "text-brand-600 dark:text-brand-300"
-                }`}
-              >
-                {ex.label}
-                {pendingExample === ex.label ? (
-                  <span
-                    aria-hidden="true"
-                    className="ml-1.5 inline-block h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent align-[-1px]"
-                  />
-                ) : null}
-              </button>
-              {i < EXAMPLES.length - 1 ? " · " : ""}
-            </span>
+          <span
+            className={`text-xs font-medium ${
+              dark ? "text-brand-200/80" : "text-ink-500 dark:text-ink-400"
+            }`}
+          >
+            Try an example
+          </span>
+          {EXAMPLES.map((ex) => (
+            <button
+              key={ex.label}
+              type="button"
+              disabled={pending}
+              onClick={() => {
+                setAddress(ex.address);
+                setPendingExample(ex.label);
+                go(ex.address);
+              }}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-[background-color,border-color,color,transform] duration-150 hover:border-brand-400/60 active:scale-[0.97] disabled:opacity-50 motion-reduce:active:scale-100 ${
+                dark
+                  ? "border-white/20 bg-white/[0.05] text-brand-100 hover:bg-white/10"
+                  : "border-ink-200 bg-surface-raised text-ink-600 hover:border-brand-300 hover:text-brand-700 dark:border-white/15 dark:text-ink-300 dark:hover:text-brand-200"
+              }`}
+            >
+              {ex.label}
+              {pendingExample === ex.label ? (
+                <span
+                  aria-hidden="true"
+                  className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent"
+                />
+              ) : null}
+            </button>
           ))}
-        </p>
+        </div>
       )}
     </div>
   );
