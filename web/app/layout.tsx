@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import Script from "next/script";
 import localFont from "next/font/local";
 import "./globals.css";
 import { SiteNav } from "@/components/site/SiteNav";
@@ -115,9 +114,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="flex min-h-screen flex-col">
-        {/* GA4 aggregate analytics (GSC Ops BATCH-1 native tag) — CSP in next.config.mjs admits the gtag loader + GA endpoints */}
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-K5NKYS08G7" strategy="afterInteractive" />
-        <Script id="ga4-init" strategy="afterInteractive">{`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-K5NKYS08G7');`}</Script>
         {/* GA4 aggregate analytics (GSC Ops BATCH-1 native tag) — CSP in next.config.mjs admits the gtag loader + GA endpoints */}
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-K5NKYS08G7" strategy="afterInteractive" />
         <Script id="ga4-init" strategy="afterInteractive">{`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-K5NKYS08G7');`}</Script>
