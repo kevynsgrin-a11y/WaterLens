@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
+import Script from "next/script";
 import localFont from "next/font/local";
 import "./globals.css";
 import { SiteNav } from "@/components/site/SiteNav";
@@ -113,6 +115,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="flex min-h-screen flex-col">
+        {/* GA4 aggregate analytics (GSC Ops BATCH-1 native tag) — CSP in next.config.mjs admits the gtag loader + GA endpoints */}
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-K5NKYS08G7" strategy="afterInteractive" />
+        <Script id="ga4-init" strategy="afterInteractive">{`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-K5NKYS08G7');`}</Script>
+        {/* GA4 aggregate analytics (GSC Ops BATCH-1 native tag) — CSP in next.config.mjs admits the gtag loader + GA endpoints */}
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-K5NKYS08G7" strategy="afterInteractive" />
+        <Script id="ga4-init" strategy="afterInteractive">{`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-K5NKYS08G7');`}</Script>
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-brand-600 focus:px-4 focus:py-2 focus:text-white"
