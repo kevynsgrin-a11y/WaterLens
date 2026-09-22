@@ -4,7 +4,7 @@
  * different host silently emitted three inconsistent sets of URLs.
  */
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://waterqualitylens.com"
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.taptoglass.com"
 ).replace(/\/$/, "");
 
 export const SITE_NAME = "WaterQualityLens";
