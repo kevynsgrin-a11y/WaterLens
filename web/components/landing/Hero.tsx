@@ -2,12 +2,18 @@ import AddressSearch from "@/components/AddressSearch";
 import { Container, Eyebrow } from "@/components/ui";
 import { HeroPlate } from "./HeroPlate";
 
+const TRUST_CHIPS = [
+  "EPA SDWIS enforcement data",
+  "NSF/ANSI certified hardware only",
+  "No account · no paywall",
+];
+
 export function Hero() {
   return (
     <section
       id="lookup"
       aria-labelledby="hero-heading"
-      className="bg-hero relative overflow-hidden scroll-mt-16"
+      className="bg-hero hero-aura relative overflow-hidden scroll-mt-16"
     >
       <div className="bg-grid absolute inset-0" aria-hidden="true" />
 
@@ -34,9 +40,28 @@ export function Hero() {
                 certified to remove it.
               </p>
 
-              <div className="mt-6 sm:mt-8">
+              <div className="glow-brand mt-6 sm:mt-8">
                 <AddressSearch variant="hero" align="start" />
               </div>
+
+              <ul
+                className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2"
+                aria-label="Data sources and access"
+              >
+                {TRUST_CHIPS.map((chip, i) => (
+                  <li key={chip} className="flex items-center gap-3">
+                    {i > 0 ? (
+                      <span
+                        aria-hidden="true"
+                        className="h-1 w-1 rounded-full bg-ink-300 dark:bg-ink-600"
+                      />
+                    ) : null}
+                    <span className="text-xs font-medium tracking-wide text-ink-500 dark:text-ink-400">
+                      {chip}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
 
