@@ -1,0 +1,92 @@
+import assert from "node:assert/strict";
+import { spawn } from "node:child_process";
+import { createServer } from "node:net";
+import { once } from "node:events";
+import { fileURLToPath } from "node:url";
+
+// Exercise the production server, including Next's slash normalization and
+// query handling. Run `npm run build` first; no external services are contacted.
+const webRoot = fileURLToPath(new URL("../", import.meta.url));
+const reservation = createServer().listen(0, "127.0.0.1");
+await once(reservation, "listening");
+const port = reservation.address().port;
+await new Promise((resolve) => reservation.close(resolve));
+const origin = `http://127.0.0.1:${port}`;
+const server = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "-H", "127.0.0.1", "-p", String(port)], {
+  cwd: webRoot,
+  env: { ...process.env, NEXT_TELEMETRY_DISABLED: "1" },
+  stdio: ["ignore", "pipe", "pipe"],
+});
+let output = "";
+server.stdout.on("data", (chunk) => { output += chunk; });
+server.stderr.on("data", (chunk) => { output += chunk; });
+let startupError;
+server.on("error", (error) => { startupError = error; });
+
+try {
+  let ready = false;
+  for (let attempt = 0; attempt < 100; attempt++) {
+    if (startupError) throw startupError;
+    if (server.exitCode !== null) throw new Error(`Next exited before readiness: ${output}`);
+    try { ready = (await fetch(origin, { signal: AbortSignal.timeout(1500) })).ok; } catch {}
+    if (ready) break;
+    await new Promise((resolve) => setTimeout(resolve, 200));
+  }
+  assert.ok(ready, `Production server failed to become ready: ${output}`);
+
+  for (const path of ["/check", "/check/", "/check?source=qa&value=a%2Fb&value=two", "/check/?source=qa"]) {
+    const original = new URL(path, origin);
+    let target = original;
+    let compatibilityRedirect = false;
+    for (let hop = 0; hop < 4; hop++) {
+      const response = await fetch(target, { redirect: "manual", signal: AbortSignal.timeout(10000) });
+      assert.ok([307, 308].includes(response.status), `${path}: expected a redirect, got ${response.status}`);
+      assert.ok(response.headers.get("location"), `${path}: missing Location`);
+      target = new URL(response.headers.get("location"), target);
+      assert.equal(target.origin, origin, `${path}: redirect left this site`);
+      assert.deepEqual([...target.searchParams], [...original.searchParams], `${path}: query values changed`);
+      if (target.pathname === "/") {
+        assert.equal(response.status, 307, `${path}: compatibility redirect should remain temporary`);
+        assert.equal(target.hash, "#lookup");
+        compatibilityRedirect = true;
+        break;
+      }
+    }
+    assert.ok(compatibilityRedirect, `${path}: did not reach the lookup anchor`);
+    const landing = await fetch(target, { signal: AbortSignal.timeout(10000) });
+    assert.equal(landing.status, 200);
+    const html = await landing.text();
+    assert.match(html, /id="lookup"/);
+    assert.match(html, /aria-label="Water system address lookup"/);
+    console.log(`PASS ${path} -> ${target.pathname}${target.search}${target.hash}`);
+  }
+  const missing = await fetch(`${origin}/check-missing-route`, { redirect: "manual", signal: AbortSignal.timeout(10000) });
+  assert.equal(missing.status, 404, "Unrelated unknown paths must remain 404");
+  console.log("PASS unrelated unknown route remains 404");
+
+  // Cover the pages migrated to async params/searchParams in Next 15. These
+  // bundled reference pages and a deliberately too-short QA input need no API.
+  for (const [path, title] of [
+    ["/contaminants/PB90", /<title>[^<]*Lead/i],
+    ["/pws/MI0002360", /<title>[^<]*Flint/i],
+    ["/results?address=QA&dwelling_type=MULTI_FAMILY_RENTAL", /<title>[^<]*Water report for QA/],
+  ]) {
+    const response = await fetch(`${origin}${path}`, { signal: AbortSignal.timeout(10000) });
+    assert.equal(response.status, 200, `${path}: migrated page should load`);
+    const html = await response.text();
+    assert.match(html, title, `${path}: async parameters should reach metadata`);
+    if (path.startsWith("/results")) {
+      assert.match(html, /Enter an address to see its water report/);
+      assert.match(html, /value="QA"/);
+      assert.match(html, /name="robots" content="noindex, nofollow"/);
+      assert.equal(response.headers.get("x-robots-tag"), "noindex, nofollow");
+    }
+    console.log(`PASS migrated page ${path}`);
+  }
+} finally {
+  if (server.pid && server.exitCode === null) {
+    const stopped = once(server, "exit");
+    server.kill();
+    await stopped;
+  }
+}
