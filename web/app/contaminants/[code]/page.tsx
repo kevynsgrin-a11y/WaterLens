@@ -173,8 +173,13 @@ export async function generateMetadata(
     c.health_goal === 0 ? "0 (no safe level)" : c.health_goal != null ? formatValue(c.health_goal, unit) : "not set"
   }, and the NSF/ANSI-certified filters independently verified to reduce it.`;
 
+  // Title carries the query-intent tail — GSC (Sep 2026) demand arrives as
+  // "benzene mcl" (#9), "hexavalent chromium water filter" (#92), "arsenic
+  // limits in drinking water" (#84) — and the page's own MCL/certification/
+  // filter sections ground every term. `absolute` keeps the full string in
+  // the SERP budget instead of stacking the layout brand suffix.
   return {
-    title: `${c.name} in Drinking Water`,
+    title: { absolute: `${c.name} in Drinking Water — MCL & Certified Filters` },
     description,
     alternates: { canonical: `/contaminants/${c.code}` },
     openGraph: {
