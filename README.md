@@ -159,6 +159,39 @@ npm test            # vitest — geo, set-cover, auth
 npm run deploy      # wrangler deploy
 ```
 
+### Web app and Vercel
+
+The Next.js frontend is the separate package in `web/`. The repository-root
+package is the Cloudflare Workers backend; Vercel builds the web package.
+
+The `waterqualitylens` deployment contract is:
+
+| Setting | Value |
+|---|---|
+| Root Directory | `web` |
+| Framework Preset | Next.js |
+| Node.js Version | `24.x` |
+| Install Command | `npm ci`, in `web/` |
+| Build Command | `npm run build`, in `web/` |
+| Output Directory | Next.js default (`.next`); no custom override |
+
+To reproduce the web build and its production smoke checks from the repository
+root:
+
+```bash
+npm --prefix web ci
+npm --prefix web run build
+npm --prefix web run test:lookup-route
+```
+
+CI installs both lockfiles, tests and typechecks the backend, then builds the
+web app and runs its production smoke suite. The smoke script starts and stops
+a local Next.js production server and uses bundled data without external APIs.
+Vercel settings changes, merges that trigger production builds, and production
+deployment or promotion remain owner actions. For a failed preview, inspect the
+first build error and compare its commit and settings with the latest successful
+deployment before changing the root or command overrides.
+
 ### Data sources & licensing (§10)
 
 - **SDWIS** contaminant/violation data via the EPA **Envirofacts** API — public

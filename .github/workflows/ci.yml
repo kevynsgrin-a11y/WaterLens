@@ -16,11 +16,30 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          # Match the waterqualitylens Vercel project's Node.js runtime.
+          node-version: 24
           cache: npm
-      - run: npm ci
-      - run: npm test
+          cache-dependency-path: |
+            package-lock.json
+            web/package-lock.json
+      - name: Install backend dependencies
+        run: npm ci
+      - name: Test backend
+        run: npm test
+      - name: Typecheck backend
+        run: npm run typecheck
+      - name: Install web dependencies
+        working-directory: web
+        run: npm ci
+      - name: Build web app
+        working-directory: web
+        run: npm run build
+      - name: Smoke-test production web app
+        working-directory: web
+        run: npm run test:lookup-route
