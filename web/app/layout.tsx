@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     description: SITE_DESC,
   },
   twitter: { card: "summary_large_image", title: SITE_NAME, description: SITE_DESC },
-  robots: { index: true, follow: true },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1, 'max-video-preview': -1 } },
 };
 
 export const viewport: Viewport = {
